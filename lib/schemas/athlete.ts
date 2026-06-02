@@ -4,8 +4,8 @@ import { z } from 'zod';
 // This is the core input to the plan generation engine.
 
 export const AthleteProfileSchema = z.object({
-  userId: z.string().uuid(),
-  raceDate: z.string().datetime(),
+  userId: z.uuid(),
+  raceDate: z.iso.datetime(),
   raceType: z.enum(['70.3', 'full']),
   weeklyHours: z.number().min(4).max(20),
   restDays: z
