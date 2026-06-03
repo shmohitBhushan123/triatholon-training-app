@@ -6,14 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased] — feature/strava
+## [Unreleased]
 
 ### Added
 
-- feature/privacy-and-scaffold-deployment: - added privacy page in prep for scaffold deployment (allows for access to whoop api)
-
-- feature/strava: - `lib/supabase/server.ts` — server-side Supabase client using service role key (bypasses RLS); used in all API route handlers - `lib/strava/auth.ts` — Strava OAuth helpers: `buildStravaAuthUrl`, `exchangeStravaCode`, `refreshStravaToken` - `lib/strava/client.ts` — authenticated Strava API client: `getValidAccessToken` (reads from Supabase, auto-refreshes on expiry), `stravaFetch` (authorized outbound HTTP wrapper) - `app/api/strava/connect/route.ts` — GET handler; generates CSRF state, sets httpOnly cookie, redirects browser to Strava authorization page - `app/api/strava/callback/route.ts` — GET handler; validates CSRF state, exchanges authorization code for tokens, upserts tokens into `strava_tokens` table in Supabase - `app/api/strava/activities/route.ts` — GET handler; fetches recent activities from Strava API, validates response with Zod, returns JSON - `PERSONAL_USER_ID` entry added to `.env.local.example`
-- feature/scaffold: - Next.js 15 project initialized with App Router and strict TypeScript - Tailwind CSS v4 configured with mobile-first dark theme - shadcn/ui initialized with Nova preset; CSS variables set in `app/globals.css` - Vitest configured as ESM-native test runner (`vitest.config.ts`, `vitest.setup.ts`) - ESLint 9 flat config (`eslint.config.mjs`) with strict TypeScript ruleset - Prettier configured (`.prettierrc`, `.prettierignore`) - Husky v9 + lint-staged: pre-commit hook runs Prettier → ESLint → Vitest on staged files - GitHub Actions CI workflow: triggers on push to `feature/**` and `develop`, PRs to `main`/`develop` - Project folder structure scaffolded: `app/`, `lib/`, `services/`, `components/`, `types/` - `lib/config.ts` — typed, validated environment variable access - `lib/schemas/` — Zod schemas for Strava, Whoop, Garmin, and Athlete types - `lib/utils.ts` — shared utility functions - `.env.local.example` — documented template for all required environment variables - `AGENTS.md` and `CLAUDE.md` — agent instruction files - `develop` branch created; branch protection rules configured on GitHub - Supabase project provisioned; `strava_tokens` table created with RLS policy
+- `.github/workflows/release-please.yml` — automated release workflow; triggers on push to `main`, opens Release PRs with version bumps and changelog generation
+- `release-please-config.json` — release-please configuration; `release-type: node`, `feat` and `fix` surfaced in changelog, `chore` and `docs` hidden
+- `.release-please-manifest.json` — version manifest seeded at `0.1.0`
+- `app/privacy/page.tsx` — static privacy policy page; required for Whoop developer app registration
+- `lib/supabase/server.ts` — server-side Supabase client using service role key; bypasses RLS, used in all API route handlers
+- `lib/strava/auth.ts` — Strava OAuth helpers: `buildStravaAuthUrl`, `exchangeStravaCode`, `refreshStravaToken`
+- `lib/strava/client.ts` — authenticated Strava API client: `getValidAccessToken` (reads from Supabase, auto-refreshes on expiry), `stravaFetch` (authorized outbound HTTP wrapper)
+- `app/api/strava/connect/route.ts` — initiates Strava OAuth; generates CSRF state, sets httpOnly cookie, redirects to Strava
+- `app/api/strava/callback/route.ts` — Strava OAuth callback; validates CSRF state, exchanges code for tokens, upserts into `strava_tokens`
+- `app/api/strava/activities/route.ts` — proxies recent Strava activities; Zod-validated, returns JSON
+- `lib/config.ts` — typed, validated environment variable access; fails fast on missing vars
+- `lib/schemas/` — Zod schemas for Strava, Whoop, Garmin, and Athlete types
+- `lib/utils.ts` — shared utility functions
+- Next.js 15 with App Router and strict TypeScript
+- Tailwind CSS v4 with mobile-first dark theme
+- shadcn/ui with Nova preset; CSS variables in `app/globals.css`
+- Vitest configured as ESM-native test runner
+- ESLint 9 flat config with strict TypeScript ruleset
+- Prettier, Husky v9, lint-staged — pre-commit runs Prettier → ESLint → Vitest
+- GitHub Actions CI — triggers on push to `feature/**` and `develop`, PRs to `main`/`develop`
+- Supabase project provisioned; `strava_tokens` table with RLS policy
+- `.env.local.example` — documented template for all required environment variables
 
 ### Dependencies
 
