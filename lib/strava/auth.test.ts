@@ -4,8 +4,8 @@ import { buildStravaAuthUrl, exchangeStravaCode, refreshStravaToken } from './au
 // ---------------------------------------------------------------------------
 // buildStravaAuthUrl
 // ---------------------------------------------------------------------------
-// Pure function — no network calls. Sets env vars, calls the function, checks
-// the resulting URL. Equivalent to a simple unit test of a URL builder in Go.
+// Pure function — no network calls. Sets env vars, calls the function, and
+// asserts the resulting URL contains the correct query parameters.
 // ---------------------------------------------------------------------------
 
 describe('buildStravaAuthUrl', () => {

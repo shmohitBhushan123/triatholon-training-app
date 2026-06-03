@@ -1,7 +1,7 @@
 // lib/config.ts
 // Single source of truth for all environment variables.
 // Import from here instead of accessing process.env directly throughout the app.
-// This throws at startup if a required variable is missing — fail fast, like Go.
+// This throws at startup if a required variable is missing — fail fast at the boundary.
 
 function requireEnv(key: string): string {
   const value = process.env[key];
