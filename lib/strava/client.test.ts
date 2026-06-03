@@ -4,8 +4,8 @@ import { stravaFetch } from './client';
 // ---------------------------------------------------------------------------
 // Module mocks
 // ---------------------------------------------------------------------------
-// vi.mock hoists to the top of the file — equivalent to injecting test
-// doubles before the module under test is imported.
+// vi.mock hoists to the top of the file, replacing real modules with fakes
+// before the module under test is imported.
 // Supabase and the auth helpers are mocked so no network calls are made.
 // ---------------------------------------------------------------------------
 

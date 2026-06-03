@@ -54,7 +54,6 @@ async function getValidAccessToken(): Promise<string> {
 
 // Authenticated wrapper around fetch for Strava API calls.
 // Use this instead of fetch() directly — it handles auth headers and token refresh automatically.
-// Equivalent to an HTTP client middleware in Go.
 export async function stravaFetch(path: string, options?: RequestInit): Promise<Response> {
   const accessToken = await getValidAccessToken();
 
