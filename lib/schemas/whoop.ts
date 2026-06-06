@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 export const WhoopRecoverySchema = z.object({
   cycle_id: z.number(),
-  sleep_id: z.number(),
+  sleep_id: z.string(), // Whoop v2 API returns a UUID string, not a number
   user_id: z.number(),
   created_at: z.string(),
   updated_at: z.string(),
