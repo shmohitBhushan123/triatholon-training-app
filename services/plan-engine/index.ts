@@ -12,7 +12,13 @@ export { generateRunPlan } from './run/plan';
 export { generateCyclingPlan } from './cycling/plan';
 export { generateSwimPlan } from './swim/plan';
 export { generateTriPlan } from './tri/plan';
-export type { RunnerProfile, VdotPaceConfig, RunPreferences, RunWorkout } from './run/types';
+export type {
+  RunnerProfile,
+  VdotPaceConfig,
+  RunPreferences,
+  RunWorkout,
+  TrainingPhase,
+} from './run/types';
 export type { CyclistProfile, CyclingPreferences, CyclingWorkout } from './cycling/types';
 export type { SwimmerProfile, SwimPreferences, SwimWorkout } from './swim/types';
 export type { TriPreferences, TriPlanWeek } from './tri/types';

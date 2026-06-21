@@ -1,28 +1,30 @@
 // services/plan-engine/run/plan.ts
-// Generates a structured running training plan from a runner profile and preferences.
+// Public API for the run plan engine.
+// Selects the correct generation strategy based on weeks remaining before the race.
 //
-// Weekly template logic (days → workout type distribution):
-//   2 days: [easy, long]
-//   3 days: [easy, tempo, long]
-//   4 days: [easy, tempo, easy, long]
-//   5 days: [easy, tempo, easy, interval, long]
-//   6 days: [easy, tempo, easy, interval, easy, long]
-//
-// ~80% of weekly volume at Easy pace, ~20% quality (Tempo/Interval).
-// Pace values are snapshotted from the VDOT table at generation time.
+// Mode selection:
+//   < 4 weeks  -> throw (too soon to build a useful plan)
+//   4-9 weeks  -> maintenance/taper plan (flat volume, race-ready focus)
+//   >= 10 weeks -> full periodized plan (Base -> Build 1 -> Build 2 -> Race Prep -> Taper)
 
 import type { RunnerProfile, RunPreferences, RunWorkout } from './types';
+import { getWeeksToRace } from './util';
+import { generateFullPlan, generateMaintenancePlan } from './generators';
 
 export function generateRunPlan(profile: RunnerProfile, preferences: RunPreferences): RunWorkout[] {
-  // TODO: implement run plan generation
-  // Steps:
-  //   1. Calculate weeks to race from preferences.targetRaceDate
-  //   2. Divide weeks into phases (base, build1, build2, race-prep, taper)
-  //   3. For each week, determine weekly volume and cutback weeks
-  //   4. Assign workout types to training days using the template above
-  //   5. Snapshot pace values from getPaceConfig(profile.vdot) at generation time
-  //   6. Return flat array of RunWorkout rows ready to insert into run_workouts
-  void profile;
-  void preferences;
-  return [];
+  if (!preferences.targetRaceDate) {
+    throw new Error('targetRaceDate is required to generate a run plan.');
+  }
+
+  const weeksToRace = getWeeksToRace(preferences.targetRaceDate);
+
+  if (weeksToRace < 4) {
+    throw new Error(`Race date is too soon: ${weeksToRace} week(s) remaining, minimum 4 required.`);
+  }
+
+  if (weeksToRace < 10) {
+    return generateMaintenancePlan(weeksToRace, profile, preferences);
+  }
+
+  return generateFullPlan(weeksToRace, profile, preferences);
 }
