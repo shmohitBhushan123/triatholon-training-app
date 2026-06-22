@@ -4,7 +4,7 @@
 
 import type { RunPreferences, RunWorkout } from './types';
 import type { VdotPaceConfig } from './types';
-import type { WeekSpec } from './schedule';
+import type { WeekSpec } from './types';
 import { minutesToMeters, deriveIntervalPaceMinPerMile } from './util';
 
 type WorkoutToken = 'easy' | 'tempo' | 'interval' | 'long';

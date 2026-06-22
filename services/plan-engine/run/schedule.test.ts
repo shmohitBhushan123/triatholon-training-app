@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { buildFullSchedule } from './schedule';
+import { buildPeriodizedSchedule } from './generators';
 
 describe('buildFullSchedule', () => {
   describe('20 weeks, 2 taper weeks, 180 min base volume', () => {
-    const schedule = buildFullSchedule(20, 2, 180);
+    const schedule = buildPeriodizedSchedule(20, 2, 180);
 
     it('returns exactly 20 entries', () => {
       expect(schedule).toHaveLength(20);
@@ -52,7 +52,7 @@ describe('buildFullSchedule', () => {
   });
 
   describe('minimum viable plan (10 weeks, 2 taper weeks)', () => {
-    const schedule = buildFullSchedule(10, 2, 180);
+    const schedule = buildPeriodizedSchedule(10, 2, 180);
 
     it('returns exactly 10 entries', () => {
       expect(schedule).toHaveLength(10);
@@ -66,7 +66,7 @@ describe('buildFullSchedule', () => {
   });
 
   describe('single-week taper (1 taper week)', () => {
-    const schedule = buildFullSchedule(12, 1, 200);
+    const schedule = buildPeriodizedSchedule(12, 1, 200);
 
     it('last week is taper', () => {
       expect(schedule[11].phase).toBe('taper');
