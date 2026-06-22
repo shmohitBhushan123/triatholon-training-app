@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildPeriodizedSchedule } from './generators';
+import { buildPeriodizedSchedule } from '../schedule';
 
 describe('buildFullSchedule', () => {
   describe('20 weeks, 2 taper weeks, 180 min base volume', () => {

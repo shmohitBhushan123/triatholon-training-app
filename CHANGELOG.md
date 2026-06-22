@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **feat: general-scheduler** - migrate scheduler from run plan to general function for each dicipline to utilize
 - **fix: run plan refactor** - removed schedule.ts and moved to generators.ts, updated db table
 - **feat: run-plan-generator** - create run plan off calculation
 - **feat: plan-engine-scaffold** — added supabase migrations table with created plan tables for each sport. Scaffold each training plan under services
