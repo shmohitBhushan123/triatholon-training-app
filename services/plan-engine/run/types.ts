@@ -42,6 +42,13 @@ export interface VdotPaceConfig {
 // 'maintenance' is used when there are too few weeks for full periodization.
 export type TrainingPhase = 'base' | 'build1' | 'build2' | 'race_prep' | 'taper' | 'maintenance';
 
+// Week-level scaffold produced by buildPeriodizedSchedule and consumed by workout-builder.
+export interface WeekSpec {
+  weekNumber: number;
+  phase: TrainingPhase;
+  volumeMinutes: number;
+}
+
 export interface RunPreferences {
   id: string;
   userId: string;

@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **fix: run plan refactor** - removed schedule.ts and moved to generators.ts, updated db table
 - **feat: run-plan-generator** - create run plan off calculation
 - **feat: plan-engine-scaffold** — added supabase migrations table with created plan tables for each sport. Scaffold each training plan under services
 - **feat: zwift** — `.zwo` XML file generator (`lib/zwift/zwo.ts`), Zod schema for all block types (`lib/schemas/zwift.ts`), `POST /api/zwift/generate` endpoint returning a downloadable `.zwo` file; supports Warmup, Cooldown, SteadyState, IntervalsT, and FreeRide blocks; power values expressed as FTP fractions
