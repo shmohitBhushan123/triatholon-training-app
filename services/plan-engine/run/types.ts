@@ -4,6 +4,8 @@
 // Pace and power values in workout types are denormalized at generation time —
 // a future profile update does not change a workout that already exists in a plan.
 
+import type { TrainingPhase } from '../schedule';
+
 export interface RunnerProfile {
   id: string;
   userId: string;
@@ -38,16 +40,9 @@ export interface VdotPaceConfig {
   rep800m: string | null;
 }
 
-// Training phases used to label each week of the generated plan.
-// 'maintenance' is used when there are too few weeks for full periodization.
-export type TrainingPhase = 'base' | 'build1' | 'build2' | 'race_prep' | 'taper' | 'maintenance';
-
-// Week-level scaffold produced by buildPeriodizedSchedule and consumed by workout-builder.
-export interface WeekSpec {
-  weekNumber: number;
-  phase: TrainingPhase;
-  volumeMinutes: number;
-}
+// Training phases and WeekSpec live in the shared plan-engine scheduling layer.
+// Re-exported here so existing imports within the run module remain unchanged.
+export type { TrainingPhase, WeekSpec } from '../schedule';
 
 export interface RunPreferences {
   id: string;
