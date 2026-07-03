@@ -23,7 +23,7 @@ const WEEKLY_TEMPLATES: { [days: number]: WorkoutToken[] } = {
   6: ['easy', 'tempo', 'easy', 'interval', 'easy', 'long'],
 };
 
-export function buildWorkoutsForWeek(
+export function buildRunningWorkoutsForWeek(
   spec: WeekSpec,
   preferences: RunPreferences,
   paces: VdotPaceConfig,

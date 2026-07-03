@@ -9,7 +9,7 @@ import {
   TAPER_RACE_WEEK_RATIO,
 } from '../schedule';
 import { getPaceConfig } from './vdot';
-import { buildWorkoutsForWeek } from './workout-builder';
+import { buildRunningWorkoutsForWeek } from './workout-builder';
 
 // Taper length by race distance. Falls back to 2 weeks when distance is null.
 const TAPER_WEEKS_BY_DISTANCE: Partial<Record<string, number>> = {
@@ -21,7 +21,7 @@ const TAPER_WEEKS_BY_DISTANCE: Partial<Record<string, number>> = {
 
 // Full periodized plan: Base -> Build 1 -> Build 2 -> Race Prep -> Taper.
 // Progressive overload (~10%/week) with cutback every 4th week.
-export function generateFullPlan(
+export function generateFullRunningPlan(
   weeksToRace: number,
   profile: RunnerProfile,
   preferences: RunPreferences
@@ -33,7 +33,7 @@ export function generateFullPlan(
     taperWeeks,
     preferences.targetWeeklyRunMinutes
   );
-  return schedule.flatMap((spec) => buildWorkoutsForWeek(spec, preferences, paces, ''));
+  return schedule.flatMap((spec) => buildRunningWorkoutsForWeek(spec, preferences, paces, ''));
 }
 
 // Maintenance/taper plan: flat volume throughout, reduced in final 1-2 weeks.
@@ -51,7 +51,7 @@ export function generateMaintenancePlan(
 
   for (let w = 1; w <= maintenanceWeeks; w++) {
     workouts.push(
-      ...buildWorkoutsForWeek(
+      ...buildRunningWorkoutsForWeek(
         { weekNumber: w, phase: 'maintenance', volumeMinutes: baseVolume },
         preferences,
         paces,
@@ -63,7 +63,7 @@ export function generateMaintenancePlan(
   for (let t = 0; t < taperWeeks; t++) {
     const isRaceWeek = t === taperWeeks - 1;
     workouts.push(
-      ...buildWorkoutsForWeek(
+      ...buildRunningWorkoutsForWeek(
         {
           weekNumber: maintenanceWeeks + t + 1,
           phase: 'taper',

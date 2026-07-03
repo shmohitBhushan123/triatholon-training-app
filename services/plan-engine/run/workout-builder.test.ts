@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildWorkoutsForWeek } from './workout-builder';
+import { buildRunningWorkoutsForWeek } from './workout-builder';
 import { getPaceConfig } from './vdot';
 import type { RunPreferences } from './types';
 
@@ -18,7 +18,7 @@ const baseSpec = { weekNumber: 1, phase: 'base' as const, volumeMinutes: 180 };
 
 describe('buildWorkoutsForWeek — 5-day week, VDOT 46', () => {
   const paces = getPaceConfig(46);
-  const workouts = buildWorkoutsForWeek(baseSpec, fiveDayPrefs, paces, '');
+  const workouts = buildRunningWorkoutsForWeek(baseSpec, fiveDayPrefs, paces, '');
 
   it('produces exactly 5 workouts', () => {
     expect(workouts).toHaveLength(5);
@@ -70,7 +70,7 @@ describe('buildWorkoutsForWeek — 5-day week, VDOT 46', () => {
 
 describe('buildWorkoutsForWeek — interval demotion at VDOT 32 (no I-pace prescribed)', () => {
   const paces = getPaceConfig(32); // interval400m is null
-  const workouts = buildWorkoutsForWeek(baseSpec, fiveDayPrefs, paces, '');
+  const workouts = buildRunningWorkoutsForWeek(baseSpec, fiveDayPrefs, paces, '');
 
   it('produces no interval workouts', () => {
     expect(workouts.filter((w) => w.workoutType === 'interval')).toHaveLength(0);
@@ -85,7 +85,7 @@ describe('buildWorkoutsForWeek — interval demotion at VDOT 32 (no I-pace presc
 describe('buildWorkoutsForWeek — 3-day week', () => {
   const prefs: RunPreferences = { ...fiveDayPrefs, trainingDays: [1, 3, 6], longRunDay: 6 };
   const paces = getPaceConfig(46);
-  const workouts = buildWorkoutsForWeek(baseSpec, prefs, paces, '');
+  const workouts = buildRunningWorkoutsForWeek(baseSpec, prefs, paces, '');
 
   it('produces exactly 3 workouts', () => {
     expect(workouts).toHaveLength(3);

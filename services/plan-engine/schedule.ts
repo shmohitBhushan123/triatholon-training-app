@@ -76,3 +76,14 @@ export function buildPeriodizedSchedule(
 
   return schedule;
 }
+
+// Whole weeks from today to a target date (ceiling). Used by all sport plan gates.
+// 'event', 'race', and 'ride' are the same concept — the date you're training toward.
+export function getWeeksToEvent(targetDate: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const event = new Date(targetDate);
+  event.setHours(0, 0, 0, 0);
+  const diffMs = event.getTime() - today.getTime();
+  return Math.max(0, Math.ceil(diffMs / (7 * 24 * 60 * 60 * 1000)));
+}

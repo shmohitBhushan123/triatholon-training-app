@@ -1,31 +1,41 @@
 // services/plan-engine/cycling/plan.ts
-// Generates a structured cycling training plan from a cyclist profile and preferences.
+// Public API for cycling plan generation. Mode gate only — delegates to generators.ts.
 //
-// Training zones use the Coggan 7-zone model expressed as % of FTP:
-//   Zone 1 — Active Recovery:  < 55% FTP
-//   Zone 2 — Endurance:       56–75% FTP
-//   Zone 3 — Tempo:           76–90% FTP
-//   Zone 4 — Threshold:       91–105% FTP
-//   Zone 5 — VO2max:         106–120% FTP
-//   Zone 6 — Anaerobic:      121–150% FTP
-//   Zone 7 — Neuromuscular:   > 150% FTP
+// Mode selection (mirrors run/plan.ts logic):
+//   no targetEventDate              → throw (cannot generate a plan without a race date)
+//   < 4 weeks to event              → throw (too soon to generate a meaningful plan)
+//   4–9 weeks to event              → generateMaintenanceCyclingPlan
+//   ≥ 10 weeks to event             → generateFullCyclingPlan
 //
+// Training zones use the Coggan 7-zone model expressed as % of FTP.
 // Power values are snapshotted from profile.ftpWatts at generation time.
 
 import type { CyclistProfile, CyclingPreferences, CyclingWorkout } from './types';
+import {
+  generateFullCyclingPlan,
+  generateMaintenanceCyclingPlan,
+  getWeeksToEvent,
+} from './generators';
 
 export function generateCyclingPlan(
   profile: CyclistProfile,
   preferences: CyclingPreferences
 ): CyclingWorkout[] {
-  // TODO: implement cycling plan generation
-  // Steps:
-  //   1. Calculate weeks to event from preferences.targetEventDate
-  //   2. Divide weeks into phases (base endurance, build, peak, taper)
-  //   3. For each week, assign workout types to training days
-  //   4. Snapshot watt ranges from Coggan zones × profile.ftpWatts at generation time
-  //   5. Return flat array of CyclingWorkout rows ready to insert into cycling_workouts
-  void profile;
-  void preferences;
-  return [];
+  if (!preferences.targetEventDate) {
+    throw new Error('targetEventDate is required to generate a cycling plan');
+  }
+
+  const weeksToEvent = getWeeksToEvent(preferences.targetEventDate);
+
+  if (weeksToEvent < 4) {
+    throw new Error(
+      `Event is too soon to generate a plan (${weeksToEvent} weeks away; minimum is 4)`
+    );
+  }
+
+  if (weeksToEvent < 10) {
+    return generateMaintenanceCyclingPlan(weeksToEvent, profile, preferences);
+  }
+
+  return generateFullCyclingPlan(weeksToEvent, profile, preferences);
 }
