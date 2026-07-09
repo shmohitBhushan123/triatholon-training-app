@@ -11,18 +11,64 @@ const mockProfile: SwimmerProfile = {
   updatedAt: '2026-06-11T00:00:00Z',
 };
 
-const mockPreferences: SwimPreferences = {
-  id: 'test-pref-id',
-  userId: 'test-user',
-  trainingDays: [0, 2, 4],
-  goalType: 'completion',
-  targetEvent: '70.3_swim',
-  targetEventDate: '2026-09-14',
-};
+// Helpers to build a preferences object with a specific event date.
+function prefsWithDate(daysOut: number): SwimPreferences {
+  const d = new Date();
+  d.setDate(d.getDate() + daysOut);
+  return {
+    id: 'test-pref-id',
+    userId: 'test-user',
+    trainingDays: [0, 2, 4],
+    goalType: 'completion',
+    targetEvent: '70.3_swim',
+    targetEventDate: d.toISOString().split('T')[0],
+  };
+}
 
-describe('generateSwimPlan', () => {
+describe('generateSwimPlan — mode gate', () => {
+  it('throws when targetEventDate is missing', () => {
+    const prefs: SwimPreferences = { ...prefsWithDate(100), targetEventDate: null };
+    expect(() => generateSwimPlan(mockProfile, prefs)).toThrow('targetEventDate is required');
+  });
+
+  it('throws when event is fewer than 4 weeks away', () => {
+    expect(() => generateSwimPlan(mockProfile, prefsWithDate(20))).toThrow('too soon');
+  });
+
+  it('returns maintenance plan for 4–9 weeks out (e.g. 42 days = 6 weeks)', () => {
+    const plan = generateSwimPlan(mockProfile, prefsWithDate(42));
+    expect(plan.length).toBeGreaterThan(0);
+    const phases = new Set(plan.map((w) => w.phase));
+    // Maintenance plan only has 'maintenance' and 'taper' phases.
+    expect(phases.has('base')).toBe(false);
+    expect(phases.has('maintenance')).toBe(true);
+  });
+
+  it('returns full periodized plan for ≥ 10 weeks out (e.g. 84 days = 12 weeks)', () => {
+    const plan = generateSwimPlan(mockProfile, prefsWithDate(84));
+    expect(plan.length).toBeGreaterThan(0);
+    const phases = new Set(plan.map((w) => w.phase));
+    expect(phases.has('base')).toBe(true);
+  });
+
   it('returns an array', () => {
-    const result = generateSwimPlan(mockProfile, mockPreferences);
+    const result = generateSwimPlan(mockProfile, prefsWithDate(119));
     expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('all workouts have valid workoutType', () => {
+    const plan = generateSwimPlan(mockProfile, prefsWithDate(119));
+    const validTypes = new Set(['aerobic', 'threshold', 'speed', 'rest']);
+    plan.forEach((w) => expect(validTypes.has(w.workoutType)).toBe(true));
+  });
+
+  it('pace values are snapshotted strings (not null) on threshold workouts', () => {
+    const plan = generateSwimPlan(mockProfile, prefsWithDate(119));
+    const threshold = plan.filter((w) => w.workoutType === 'threshold');
+    expect(threshold.length).toBeGreaterThan(0);
+    threshold.forEach((w) => {
+      expect(w.targetPaceMin).not.toBeNull();
+      expect(w.targetPaceMax).not.toBeNull();
+    });
   });
 });
