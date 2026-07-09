@@ -4,7 +4,6 @@ import {
   formatMinPerMile,
   minutesToMeters,
   deriveIntervalPaceMinPerMile,
-  getWeeksToRace,
 } from './util';
 
 describe('parseTimeToMinutes', () => {
@@ -56,28 +55,5 @@ describe('deriveIntervalPaceMinPerMile', () => {
     const slow = parseTimeToMinutes(deriveIntervalPaceMinPerMile('4:12'));
     const fast = parseTimeToMinutes(deriveIntervalPaceMinPerMile('3:30'));
     expect(fast).toBeLessThan(slow);
-  });
-});
-
-describe('getWeeksToRace', () => {
-  it('returns 10 for a date exactly 70 days away', () => {
-    const d = new Date();
-    d.setDate(d.getDate() + 70);
-    expect(getWeeksToRace(d.toISOString().split('T')[0])).toBe(10);
-  });
-
-  it('returns 0 for today', () => {
-    const today = new Date().toISOString().split('T')[0];
-    expect(getWeeksToRace(today)).toBe(0);
-  });
-
-  it('returns a larger value for a further date', () => {
-    const near = new Date();
-    near.setDate(near.getDate() + 70);
-    const far = new Date();
-    far.setDate(far.getDate() + 140);
-    expect(getWeeksToRace(far.toISOString().split('T')[0])).toBeGreaterThan(
-      getWeeksToRace(near.toISOString().split('T')[0])
-    );
   });
 });

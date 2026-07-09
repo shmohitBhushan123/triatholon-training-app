@@ -30,13 +30,3 @@ export function deriveIntervalPaceMinPerMile(interval400m: string): string {
   const speedMPerMin = 1000 / repMinutes;
   return formatMinPerMile(1609.344 / speedMPerMin);
 }
-
-// Whole weeks from today to the target race date (ceiling).
-export function getWeeksToRace(targetRaceDate: string): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const race = new Date(targetRaceDate);
-  race.setHours(0, 0, 0, 0);
-  const diffMs = race.getTime() - today.getTime();
-  return Math.max(0, Math.ceil(diffMs / (7 * 24 * 60 * 60 * 1000)));
-}

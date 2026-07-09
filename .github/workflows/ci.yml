@@ -40,4 +40,4 @@ jobs:
         run: npm run test:run
 
       - name: Lint SQL migrations (squawk)
-        run: npx squawk supabase/migrations/**/*.sql
+        run: npx squawk 'supabase/migrations/**/*.sql'

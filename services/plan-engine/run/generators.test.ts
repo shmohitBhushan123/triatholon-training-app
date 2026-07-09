@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateFullPlan, generateMaintenancePlan } from './generators';
+import { generateFullRunningPlan, generateMaintenancePlan } from './generators';
 import type { RunnerProfile, RunPreferences } from './types';
 
 const mockProfile: RunnerProfile = {
@@ -23,7 +23,7 @@ const mockPreferences: RunPreferences = {
 };
 
 describe('generateFullPlan', () => {
-  const plan = generateFullPlan(20, mockProfile, mockPreferences);
+  const plan = generateFullRunningPlan(20, mockProfile, mockPreferences);
 
   it('produces one workout per training day per week', () => {
     expect(plan).toHaveLength(20 * mockPreferences.trainingDays.length);
@@ -53,7 +53,7 @@ describe('generateFullPlan', () => {
   });
 
   it('marathon target produces 3 taper weeks', () => {
-    const marathonPlan = generateFullPlan(20, mockProfile, {
+    const marathonPlan = generateFullRunningPlan(20, mockProfile, {
       ...mockPreferences,
       targetRaceDistance: 'marathon',
     });

@@ -1,2 +1,2 @@
-npx lint-staged
+NODE_OPTIONS="--max-old-space-size=4096" npx lint-staged
 npm run test:run

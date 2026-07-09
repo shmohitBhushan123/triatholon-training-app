@@ -8,15 +8,15 @@
 //   >= 10 weeks -> full periodized plan (Base -> Build 1 -> Build 2 -> Race Prep -> Taper)
 
 import type { RunnerProfile, RunPreferences, RunWorkout } from './types';
-import { getWeeksToRace } from './util';
-import { generateFullPlan, generateMaintenancePlan } from './generators';
+import { getWeeksToEvent } from '../schedule';
+import { generateFullRunningPlan, generateMaintenancePlan } from './generators';
 
 export function generateRunPlan(profile: RunnerProfile, preferences: RunPreferences): RunWorkout[] {
   if (!preferences.targetRaceDate) {
     throw new Error('targetRaceDate is required to generate a run plan.');
   }
 
-  const weeksToRace = getWeeksToRace(preferences.targetRaceDate);
+  const weeksToRace = getWeeksToEvent(preferences.targetRaceDate);
 
   if (weeksToRace < 4) {
     throw new Error(`Race date is too soon: ${weeksToRace} week(s) remaining, minimum 4 required.`);
@@ -26,5 +26,5 @@ export function generateRunPlan(profile: RunnerProfile, preferences: RunPreferen
     return generateMaintenancePlan(weeksToRace, profile, preferences);
   }
 
-  return generateFullPlan(weeksToRace, profile, preferences);
+  return generateFullRunningPlan(weeksToRace, profile, preferences);
 }
