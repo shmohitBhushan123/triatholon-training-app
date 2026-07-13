@@ -1,29 +1,38 @@
 // services/plan-engine/swim/plan.ts
-// Generates a structured swim training plan from a swimmer profile and preferences.
+// Public API for swim plan generation. Mode gate only — delegates to generators.ts.
 //
-// CSS (Critical Swim Speed) zones:
-//   Aerobic:   > CSS + 15s/100yd  (easy, high volume)
-//   Moderate:  CSS + 5–15s/100yd
-//   Threshold: CSS ± 5s/100yd     (race pace for triathlon swims)
-//   Speed:     < CSS - 5s/100yd   (short reps, sprint work)
+// Mode selection (mirrors cycling/plan.ts and run/plan.ts):
+//   no targetEventDate   → throw (cannot generate a plan without an event date)
+//   < 4 weeks            → throw (too soon to generate a meaningful plan)
+//   4–9 weeks            → generateMaintenanceSwimPlan
+//   ≥ 10 weeks           → generateFullSwimPlan
 //
-// CSS formula: css_seconds_per_100yd = (tt400_seconds - tt200_seconds) / 2
-// Pace values are snapshotted from profile.cssPer100ydSeconds at generation time.
+// CSS zones are defined in util.ts and snapshotted from profile.cssPer100ydSeconds
+// at generation time. A future re-test does not change already-generated workouts.
 
 import type { SwimmerProfile, SwimPreferences, SwimWorkout } from './types';
+import { generateFullSwimPlan, generateMaintenanceSwimPlan } from './generators';
+import { getWeeksToEvent } from './util';
 
 export function generateSwimPlan(
   profile: SwimmerProfile,
   preferences: SwimPreferences
 ): SwimWorkout[] {
-  // TODO: implement swim plan generation
-  // Steps:
-  //   1. Calculate weeks to event from preferences.targetEventDate
-  //   2. Divide weeks into phases (base, build, peak, taper)
-  //   3. For each week, assign workout types to training days
-  //   4. Snapshot pace ranges from CSS zones × profile.cssPer100ydSeconds at generation time
-  //   5. Return flat array of SwimWorkout rows ready to insert into swim_workouts
-  void profile;
-  void preferences;
-  return [];
+  if (!preferences.targetEventDate) {
+    throw new Error('targetEventDate is required to generate a swim plan');
+  }
+
+  const weeksToEvent = getWeeksToEvent(preferences.targetEventDate);
+
+  if (weeksToEvent < 4) {
+    throw new Error(
+      `Event is too soon to generate a plan (${weeksToEvent} week(s) away; minimum is 4)`
+    );
+  }
+
+  if (weeksToEvent < 10) {
+    return generateMaintenanceSwimPlan(weeksToEvent, profile, preferences);
+  }
+
+  return generateFullSwimPlan(weeksToEvent, profile, preferences);
 }

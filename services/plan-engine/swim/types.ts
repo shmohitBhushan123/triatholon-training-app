@@ -4,6 +4,8 @@
 // Pace values in workout types are denormalized at generation time —
 // a future time trial result does not change a workout that already exists in a plan.
 
+import type { TrainingPhase } from '../schedule';
+
 export interface SwimmerProfile {
   id: string;
   userId: string;
@@ -26,9 +28,11 @@ export interface SwimWorkout {
   planId: string;
   weekNumber: number;
   dayOfWeek: number; // 0=Monday
+  phase: TrainingPhase; // snapshotted from the schedule at generation time
   workoutType: 'aerobic' | 'threshold' | 'speed' | 'rest';
   description: string | null;
   targetDistanceMeters: number | null;
+  weeklyVolumeYards: number; // total yard target for the week this workout belongs to
   targetCssZone: string | null; // e.g. 'aerobic', 'threshold'
   targetPaceMin: string | null; // snapshotted from CSS at generation time
   targetPaceMax: string | null;
