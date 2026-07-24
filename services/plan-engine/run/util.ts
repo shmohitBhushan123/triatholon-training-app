@@ -22,9 +22,10 @@ export function minutesToMeters(durationMinutes: number, paceMinPerMile: string)
 }
 
 // Derives interval pace (min/mile) from VdotPaceConfig.interval400m.
-// NOTE: Despite the field name, interval400m stores the 1000m rep time from
-// Daniels' Table 5.2 (e.g. '4:12' for VDOT 46 = 1000m in 4:12 = ~6:45/mile).
-// TODO: rename VdotPaceConfig.interval400m -> interval1000m and update vdot-table.ts.
+// NOTE: Despite the field name, interval400m stores the 1000m rep time
+// (Daniels' "Km" column under I-pace) — e.g. '4:12' for VDOT 46 = 1000m in
+// 4:12 = ~6:45/mile. See vdot-formula.ts for the derivation.
+// TODO: rename VdotPaceConfig.interval400m -> interval1000m.
 export function deriveIntervalPaceMinPerMile(interval400m: string): string {
   const repMinutes = parseTimeToMinutes(interval400m);
   const speedMPerMin = 1000 / repMinutes;

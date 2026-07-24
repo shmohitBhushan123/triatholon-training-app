@@ -6,11 +6,12 @@
 // a set of training paces across 5 zones: Easy (E), Marathon (M), Tempo (T),
 // Interval (I), and Repetition (R).
 //
-// The lookup table is a static TypeScript constant — it never changes and
-// requires no DB round-trip. Pace values are in min/mile (mm:ss format).
+// Pace values are computed at call time from the underlying physiological
+// model (see vdot-formula.ts) rather than looked up from a static table copied
+// from the source book. Pace values are in min/mile (mm:ss format).
 
 import type { VdotPaceConfig } from './types';
-import { VDOT_PACE_TABLE } from './vdot-table';
+import { computePaceConfig } from './vdot-formula';
 
 // Race distances supported as seed inputs, in meters.
 const SEED_DISTANCE_METERS: Record<string, number> = {
@@ -25,7 +26,7 @@ const SEED_DISTANCE_METERS: Record<string, number> = {
 
 // Derives an athlete's VDOT from a race performance using the Daniels-Gilbert
 // formula (Daniels & Gilbert, 1979). Returns the nearest integer VDOT, which
-// maps directly to a row in VDOT_PACE_TABLE.
+// is passed directly to computePaceConfig.
 //
 // Formula:
 //   velocity      = distance_meters / time_minutes          (m/min)
@@ -60,11 +61,12 @@ export function deriveVdot(seedDistance: string, seedTimeSeconds: number): numbe
   return Math.round(vo2 / pctVO2max);
 }
 
-// Returns the pace config for a given VDOT from the static lookup table.
-// Throws if the VDOT value is outside the supported range (30–85).
+// Returns the pace config for a given VDOT, computed from the Daniels-Gilbert
+// physiological model. Throws if the VDOT value is outside the supported
+// range (30–85).
 export function getPaceConfig(vdot: number): VdotPaceConfig {
   if (vdot < 30 || vdot > 85) {
     throw new Error(`VDOT out of range: ${vdot}. Supported range: 30–85.`);
   }
-  return VDOT_PACE_TABLE[vdot];
+  return computePaceConfig(vdot);
 }

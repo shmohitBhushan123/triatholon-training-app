@@ -58,7 +58,7 @@ describe('generateRunPlan — full plan (>= 10 weeks)', () => {
 
   it('stamps VDOT 46 easy pace on easy and long workouts', () => {
     const easyAndLong = plan.filter((w) => w.workoutType === 'easy' || w.workoutType === 'long');
-    expect(easyAndLong.every((w) => w.targetPaceMin === '8:31')).toBe(true);
+    expect(easyAndLong.every((w) => w.targetPaceMin === '8:29')).toBe(true);
   });
 
   it('week 1 volume equals targetWeeklyRunMinutes', () => {

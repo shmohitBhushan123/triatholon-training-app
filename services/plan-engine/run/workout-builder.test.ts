@@ -44,13 +44,13 @@ describe('buildWorkoutsForWeek — 5-day week, VDOT 46', () => {
   it('stamps VDOT 46 easy pace on easy workouts', () => {
     const easy = workouts.filter((w) => w.workoutType === 'easy');
     expect(easy.length).toBeGreaterThan(0);
-    expect(easy.every((w) => w.targetPaceMin === '8:31')).toBe(true);
+    expect(easy.every((w) => w.targetPaceMin === '8:29')).toBe(true);
   });
 
   it('stamps VDOT 46 tempo pace on tempo workouts', () => {
     const tempo = workouts.filter((w) => w.workoutType === 'tempo');
     expect(tempo).toHaveLength(1);
-    expect(tempo[0].targetPaceMin).toBe('7:17');
+    expect(tempo[0].targetPaceMin).toBe('7:19');
     expect(tempo[0].targetPaceMax).toBeNull();
   });
 

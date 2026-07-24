@@ -24,22 +24,56 @@ describe('deriveVdot', () => {
 describe('getPaceConfig', () => {
   it('returns correct paces for VDOT 46 (athlete benchmark)', () => {
     const result = getPaceConfig(46);
-    expect(result.easyMinPace).toBe('8:31');
+    expect(result.easyMinPace).toBe('8:29');
     expect(result.easyMaxPace).toBe('9:34');
-    expect(result.marathonPace).toBe('7:49');
-    expect(result.tempoPace).toBe('7:17');
-    expect(result.interval400m).toBe('4:12');
+    expect(result.marathonPace).toBe('7:46');
+    expect(result.tempoPace).toBe('7:19');
+    expect(result.interval400m).toBe('4:11');
     expect(result.rep200m).toBe('0:46');
-    expect(result.rep400m).toBe('1:09');
+    expect(result.rep300m).toBe('1:09');
+    expect(result.rep400m).toBe('1:32');
+    expect(result.rep600m).toBe('2:18');
     expect(result.rep800m).toBeNull();
   });
 
   it('returns nulls for rep distances not prescribed at low VDOT (30)', () => {
     const result = getPaceConfig(30);
     expect(result.interval400m).toBeNull();
+    expect(result.rep300m).toBeNull();
     expect(result.rep400m).toBeNull();
+    expect(result.rep600m).toBeNull();
     expect(result.rep800m).toBeNull();
-    expect(result.rep200m).toBe('1:07');
+    expect(result.rep200m).toBe('1:05');
+  });
+
+  it('rep800m is always null — 800m is not a meaningful "R" (fast rep) distance', () => {
+    expect(getPaceConfig(30).rep800m).toBeNull();
+    expect(getPaceConfig(52).rep800m).toBeNull();
+    expect(getPaceConfig(85).rep800m).toBeNull();
+  });
+
+  // Cross-checks against the real printed table (Daniels' Running Formula,
+  // Table 5.2), confirmed directly from a photo of the source. These validate
+  // the computed model against ground truth without reproducing the table in
+  // the codebase. A few seconds of drift is expected — the formula is a fit,
+  // not a copy — and R400m/R600m are fields the old (buggy) static table never
+  // captured correctly in the first place, so this is stronger evidence than
+  // the table it replaced.
+  it('closely matches the real book values for VDOT 46 (within 2s)', () => {
+    const result = getPaceConfig(46);
+    expect(result.rep200m).toBe('0:46'); // book: 46
+    expect(result.rep300m).toBe('1:09'); // book: 69s = 1:09
+    // book R400m = 92s = 1:32; formula = 1:32 (91.8s rounds to 1:32)
+    expect(result.rep400m).toBe('1:32');
+  });
+
+  it('closely matches the real book values for VDOT 52 (within 2s)', () => {
+    const result = getPaceConfig(52);
+    expect(result.rep200m).toBe('0:42'); // book: 42
+    // book R300m = 64s = 1:04; formula = 1:02 (2s drift)
+    expect(result.rep300m).toBe('1:02');
+    // book R400m = 85s = 1:25; formula = 1:23 (2s drift)
+    expect(result.rep400m).toBe('1:23');
   });
 
   it('throws for VDOT below range', () => {

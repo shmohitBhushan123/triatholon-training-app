@@ -15,9 +15,10 @@ export interface RunnerProfile {
   updatedAt: string;
 }
 
-// Shape of one row in VDOT_PACE_TABLE.
-// Source: Jack Daniels' Running Formula, Table 5.2.
-// All paces are per mile. null = Daniels does not prescribe this distance at this VDOT.
+// Training pace zones derived from VDOT via the Daniels-Gilbert formula.
+// Source: Jack Daniels' Running Formula (physiological model, not the printed
+// table — see vdot-formula.ts for derivation). All paces are per mile.
+// null = this rep distance is not meaningfully prescribed at this VDOT.
 export interface VdotPaceConfig {
   // Easy/Long zone — run anywhere in this range
   easyMinPace: string; // faster end of easy zone (min/mile)
@@ -29,14 +30,16 @@ export interface VdotPaceConfig {
   // Threshold (T) pace — single target, not a range
   tempoPace: string; // min/mile
 
-  // Interval (I) pace — prescribed as 400m rep time
-  // null = Daniels does not prescribe I-pace at this VDOT
+  // Interval (I) pace — prescribed as 1000m rep time (Daniels' "Km" column)
+  // null = I-pace is not meaningfully prescribed below VDOT 37
   interval400m: string | null;
 
-  // Repetition (R) paces — prescribed per rep distance in M:SS
-  // null = Daniels does not prescribe this distance at this VDOT
+  // Repetition (R) paces — a single target velocity expressed as split times
+  // for each rep distance. null = not meaningfully prescribed at this VDOT.
   rep200m: string | null;
+  rep300m: string | null;
   rep400m: string | null;
+  rep600m: string | null;
   rep800m: string | null;
 }
 

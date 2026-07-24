@@ -46,8 +46,8 @@ describe('minutesToMeters', () => {
 
 describe('deriveIntervalPaceMinPerMile', () => {
   // interval400m field stores 1000m rep time (see TODO in util.ts).
-  // VDOT 46: 1000m in 4:12 -> 238.1 m/min -> 6.759 min/mile -> '6:46'
-  it("converts VDOT 46's 1000m time of 4:12 to ~6:46/mile", () => {
+  // Example conversion: 1000m in 4:12 -> 238.1 m/min -> 6.759 min/mile -> '6:46'
+  it('converts a 1000m time of 4:12 to ~6:46/mile', () => {
     expect(deriveIntervalPaceMinPerMile('4:12')).toBe('6:46');
   });
 
