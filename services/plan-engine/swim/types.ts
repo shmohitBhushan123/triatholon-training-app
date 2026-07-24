@@ -22,6 +22,11 @@ export interface SwimPreferences {
   goalType: 'completion' | 'time_goal' | 'base_building';
   targetEvent: string | null;
   targetEventDate: string | null; // ISO date string
+  // Optional override for base weekly yard volume. When omitted, generators.ts
+  // derives a sensible default from goalType. Set by the tri plan orchestrator
+  // when swim volume is driven by an overall weekly hour budget rather than a
+  // standalone swim goal.
+  targetWeeklySwimYards?: number;
 }
 
 export interface SwimWorkout {

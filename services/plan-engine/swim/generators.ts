@@ -41,7 +41,8 @@ export function generateFullSwimPlan(
   preferences: SwimPreferences
 ): SwimWorkout[] {
   const taperWeeks = TAPER_WEEKS_BY_EVENT[preferences.targetEvent ?? ''] ?? 2;
-  const baseVolumeYards = BASE_VOLUME_BY_GOAL[preferences.goalType];
+  const baseVolumeYards =
+    preferences.targetWeeklySwimYards ?? BASE_VOLUME_BY_GOAL[preferences.goalType];
   const schedule = buildPeriodizedSchedule(weeksToEvent, taperWeeks, baseVolumeYards);
   return schedule.flatMap((spec) => buildSwimmingWorkoutsForWeek(spec, preferences, profile, ''));
 }
@@ -55,7 +56,8 @@ export function generateMaintenanceSwimPlan(
 ): SwimWorkout[] {
   const taperWeeks = weeksToEvent >= 6 ? 2 : 1;
   const maintenanceWeeks = weeksToEvent - taperWeeks;
-  const baseVolumeYards = BASE_VOLUME_BY_GOAL[preferences.goalType];
+  const baseVolumeYards =
+    preferences.targetWeeklySwimYards ?? BASE_VOLUME_BY_GOAL[preferences.goalType];
   const workouts: SwimWorkout[] = [];
 
   for (let w = 1; w <= maintenanceWeeks; w++) {

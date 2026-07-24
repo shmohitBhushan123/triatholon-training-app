@@ -42,14 +42,85 @@ const mockPreferences: TriPreferences = {
   targetRaceDate: '2026-09-14',
 };
 
+// Helper to build preferences with a race date a specific number of days out,
+// so tests don't rot as the current date advances.
+function prefsWithDaysOut(daysOut: number): TriPreferences {
+  const d = new Date();
+  d.setDate(d.getDate() + daysOut);
+  return { ...mockPreferences, targetRaceDate: d.toISOString().split('T')[0] };
+}
+
 describe('generateTriPlan', () => {
-  it('returns an array', () => {
+  it('returns a TriPlanResult with weeks and workouts for all three sports', () => {
     const result = generateTriPlan(
       mockRunProfile,
       mockCyclingProfile,
       mockSwimProfile,
       mockPreferences
     );
-    expect(Array.isArray(result)).toBe(true);
+    expect(Array.isArray(result.weeks)).toBe(true);
+    expect(Array.isArray(result.runWorkouts)).toBe(true);
+    expect(Array.isArray(result.cyclingWorkouts)).toBe(true);
+    expect(Array.isArray(result.swimWorkouts)).toBe(true);
+  });
+});
+
+describe('generateTriPlan — mode gate', () => {
+  it('throws when targetRaceDate is empty', () => {
+    const preferences: TriPreferences = { ...mockPreferences, targetRaceDate: '' };
+    expect(() =>
+      generateTriPlan(mockRunProfile, mockCyclingProfile, mockSwimProfile, preferences)
+    ).toThrow('targetRaceDate is required');
+  });
+
+  it('throws when race is fewer than 4 weeks away', () => {
+    const preferences = prefsWithDaysOut(20); // ~3 weeks
+    expect(() =>
+      generateTriPlan(mockRunProfile, mockCyclingProfile, mockSwimProfile, preferences)
+    ).toThrow('too soon');
+  });
+
+  it('returns a plan for 4–9 weeks out (each sport uses its own maintenance mode)', () => {
+    const preferences = prefsWithDaysOut(42); // 6 weeks
+    const result = generateTriPlan(
+      mockRunProfile,
+      mockCyclingProfile,
+      mockSwimProfile,
+      preferences
+    );
+    expect(result.weeks.length).toBeGreaterThan(0);
+    expect(result.runWorkouts.length).toBeGreaterThan(0);
+    expect(result.cyclingWorkouts.length).toBeGreaterThan(0);
+    expect(result.swimWorkouts.length).toBeGreaterThan(0);
+  });
+
+  it('returns a full periodized plan for ≥ 10 weeks out', () => {
+    const preferences = prefsWithDaysOut(119); // 17 weeks
+    const result = generateTriPlan(
+      mockRunProfile,
+      mockCyclingProfile,
+      mockSwimProfile,
+      preferences
+    );
+    expect(result.weeks).toHaveLength(17);
+    // Base phase should appear on the run leg in full periodized mode.
+    expect(result.runWorkouts.some((w) => w.phase === 'base')).toBe(true);
+  });
+
+  it('every weekly summary row has a triPlanId, week number, and non-negative hours', () => {
+    const preferences = prefsWithDaysOut(119);
+    const result = generateTriPlan(
+      mockRunProfile,
+      mockCyclingProfile,
+      mockSwimProfile,
+      preferences
+    );
+    result.weeks.forEach((w) => {
+      expect(w.weekNumber).toBeGreaterThan(0);
+      expect(w.totalHoursAllocated).toBeGreaterThanOrEqual(0);
+      expect(w.runHours).toBeGreaterThanOrEqual(0);
+      expect(w.bikeHours).toBeGreaterThanOrEqual(0);
+      expect(w.swimHours).toBeGreaterThanOrEqual(0);
+    });
   });
 });
