@@ -64,6 +64,21 @@ export function yardsToMeters(yards: number): number {
   return Math.round(yards * 0.9144);
 }
 
+// Converts a weekly hour budget for swimming into a yard target using the
+// athlete's CSS pace: yards = hours * 3600 (sec/hr) / css (sec/100yd) * 100.
+// Used by the tri plan orchestrator to translate an hour-based sport split
+// into swim's native yard-based volume.
+export function swimHoursToYards(hours: number, cssPer100ydSeconds: number): number {
+  return Math.round(((hours * 3600) / cssPer100ydSeconds) * 100);
+}
+
+// Converts a weekly yard volume back into hours using CSS pace — the inverse
+// of swimHoursToYards. Used when aggregating the swim leg into an hour-based
+// weekly summary (e.g. TriPlanWeek.swimHours).
+export function swimYardsToHours(yards: number, cssPer100ydSeconds: number): number {
+  return ((yards / 100) * cssPer100ydSeconds) / 3600;
+}
+
 // Whole weeks from today to the target event date (ceiling).
 // Re-exported from the shared scheduling layer — same function used by all sports.
 export { getWeeksToEvent } from '../schedule';

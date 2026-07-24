@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { getCssZoneBounds, formatPaceSec, yardsToMeters } from './util';
+import {
+  getCssZoneBounds,
+  formatPaceSec,
+  yardsToMeters,
+  swimHoursToYards,
+  swimYardsToHours,
+} from './util';
 
 // Reference athlete: CSS = 115s/100yd (1:55/100yd)
 const CSS = 115;
@@ -81,5 +87,37 @@ describe('yardsToMeters', () => {
     const aerobic = getCssZoneBounds(CSS, 'aerobic');
     // aerobic minSecPer100yd should be greater (slower) than CSS
     expect(aerobic.minSecPer100yd).toBeGreaterThan(CSS);
+  });
+});
+
+describe('swimHoursToYards', () => {
+  it('2 hours at CSS=115 -> ~6261 yards', () => {
+    // 2hr * 3600 = 7200s / 115 * 100 = 6260.87 -> 6261
+    expect(swimHoursToYards(2, CSS)).toBe(6261);
+  });
+
+  it('0 hours -> 0 yards', () => {
+    expect(swimHoursToYards(0, CSS)).toBe(0);
+  });
+
+  it('a faster CSS yields more yards for the same time budget', () => {
+    const fasterCss = 100; // faster swimmer, lower seconds/100yd
+    expect(swimHoursToYards(2, fasterCss)).toBeGreaterThan(swimHoursToYards(2, CSS));
+  });
+});
+
+describe('swimYardsToHours', () => {
+  it('6261 yards at CSS=115 -> ~2 hours', () => {
+    expect(swimYardsToHours(6261, CSS)).toBeCloseTo(2, 2);
+  });
+
+  it('0 yards -> 0 hours', () => {
+    expect(swimYardsToHours(0, CSS)).toBe(0);
+  });
+
+  it('is the inverse of swimHoursToYards (round-trip within rounding tolerance)', () => {
+    const yards = swimHoursToYards(3.5, CSS);
+    const hours = swimYardsToHours(yards, CSS);
+    expect(hours).toBeCloseTo(3.5, 2);
   });
 });

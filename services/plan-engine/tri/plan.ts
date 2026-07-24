@@ -1,40 +1,42 @@
 // services/plan-engine/tri/plan.ts
-// Generates a composite triathlon training plan by orchestrating the three
-// sport-specific generators under a shared hour budget.
+// Public API for composite triathlon plan generation. Mode gate only —
+// delegates to generateTriPlanResult in generators.ts, which derives
+// sport-specific preferences from the shared hour budget and calls each
+// sport's own generateRunPlan / generateCyclingPlan / generateSwimPlan.
 //
-// Hour allocation by race distance (defaults, adjustable):
-//   Sprint:  45% bike / 35% run / 20% swim
-//   Olympic: 45% bike / 35% run / 20% swim
-//   70.3:    45% bike / 35% run / 20% swim
-//   Full:    50% bike / 30% run / 20% swim
+// Mode selection mirrors every other sport's plan.ts:
+//   no targetRaceDate   → throw (cannot generate a plan without a race date)
+//   < 4 weeks to race   → throw (too soon to generate a meaningful plan)
+//   ≥ 4 weeks to race   → generateTriPlanResult (each sport internally
+//                         chooses maintenance vs full periodization)
 //
-// The function returns weekly allocation rows (TriPlanWeek[]).
-// Individual workout rows are written to run_workouts, cycling_workouts, and
-// swim_workouts by the sport-specific generators called internally.
+// Hour allocation by race distance (see HOUR_SPLIT_BY_TRI_DISTANCE in
+// generators.ts for the exact split):
+//   Sprint / Olympic / 70.3: 45% bike / 35% run / 20% swim
+//   Full:                    50% bike / 30% run / 20% swim
 
 import type { RunnerProfile } from '../run/types';
 import type { CyclistProfile } from '../cycling/types';
 import type { SwimmerProfile } from '../swim/types';
-import type { TriPreferences, TriPlanWeek } from './types';
+import type { TriPreferences, TriPlanResult } from './types';
+import { generateTriPlanResult } from './generators';
+import { getWeeksToEvent } from '../schedule';
 
 export function generateTriPlan(
   runProfile: RunnerProfile,
   cyclingProfile: CyclistProfile,
   swimProfile: SwimmerProfile,
   preferences: TriPreferences
-): TriPlanWeek[] {
-  // TODO: implement tri plan generation
-  // Steps:
-  //   1. Calculate weeks to race from preferences.targetRaceDate
-  //   2. Determine hour split per sport based on targetRaceDistance
-  //   3. For each week, compute run/bike/swim hours with progressive overload and cutbacks
-  //   4. Derive training days per sport from preferences.runDays / bikeDays / swimDays
-  //   5. Call generateRunPlan, generateCyclingPlan, generateSwimPlan internally
-  //      with derived preferences and the shared race date
-  //   6. Return TriPlanWeek[] for the tri_plan_weeks table
-  void runProfile;
-  void cyclingProfile;
-  void swimProfile;
-  void preferences;
-  return [];
+): TriPlanResult {
+  if (!preferences.targetRaceDate) {
+    throw new Error('targetRaceDate is required to generate a triathlon plan');
+  }
+
+  const weeksToRace = getWeeksToEvent(preferences.targetRaceDate);
+
+  if (weeksToRace < 4) {
+    throw new Error(`Race date is too soon: ${weeksToRace} week(s) remaining, minimum 4 required.`);
+  }
+
+  return generateTriPlanResult(runProfile, cyclingProfile, swimProfile, preferences);
 }

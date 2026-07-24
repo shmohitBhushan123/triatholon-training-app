@@ -65,6 +65,12 @@ describe('generateFullSwimPlan — 17 weeks, 3 days/week', () => {
     const tgPlan = generateFullSwimPlan(17, profile, tgPrefs);
     expect(tgPlan[0].weeklyVolumeYards).toBe(8000);
   });
+
+  it('targetWeeklySwimYards override takes precedence over goalType default', () => {
+    const overridePrefs: SwimPreferences = { ...threeDayPrefs, targetWeeklySwimYards: 6260 };
+    const plan = generateFullSwimPlan(17, profile, overridePrefs);
+    expect(plan[0].weeklyVolumeYards).toBe(6260);
+  });
 });
 
 describe('generateMaintenanceSwimPlan — 8 weeks, 3 days/week', () => {
