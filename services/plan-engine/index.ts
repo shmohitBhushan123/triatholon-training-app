@@ -16,4 +16,4 @@ export type { TrainingPhase, WeekSpec } from './schedule';
 export type { RunnerProfile, VdotPaceConfig, RunPreferences, RunWorkout } from './run/types';
 export type { CyclistProfile, CyclingPreferences, CyclingWorkout } from './cycling/types';
 export type { SwimmerProfile, SwimPreferences, SwimWorkout } from './swim/types';
-export type { TriPreferences, TriPlanWeek } from './tri/types';
+export type { TriPreferences, TriPlanWeek, TriPlanResult } from './tri/types';

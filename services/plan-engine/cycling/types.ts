@@ -4,7 +4,7 @@
 // Power values in workout types are denormalized at generation time —
 // a future FTP test result does not change a workout that already exists in a plan.
 
-import type { TrainingPhase } from '../schedule';
+import type { TrainingPhase, GoalType } from '../schedule';
 
 // TrainingPhase and WeekSpec are shared across all sports — re-exported here
 // so imports within the cycling module stay local.
@@ -23,7 +23,7 @@ export interface CyclingPreferences {
   userId: string;
   trainingDays: number[]; // [0,1,3,4,5] where 0=Monday, 6=Sunday
   longRideDay: number; // must be within trainingDays
-  goalType: 'completion' | 'time_goal' | 'base_building';
+  goalType: GoalType;
   targetEvent: string | null; // e.g. 'triathlon_70.3', 'gran_fondo'
   targetEventDate: string | null; // ISO date string
   // Collected in hours on the onboarding UI, converted to minutes before storage.

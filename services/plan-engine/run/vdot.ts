@@ -13,8 +13,22 @@
 import type { VdotPaceConfig } from './types';
 import { computePaceConfig } from './vdot-formula';
 
+// Race distances supported as seed inputs. Single source of truth — referenced
+// by both this Record's key type (so TypeScript enforces the two never drift
+// apart) and lib/schemas/plan-request-run.ts's Zod schema.
+export const SEED_DISTANCES = [
+  '1500m',
+  'mile',
+  '3000m',
+  '5k',
+  '10k',
+  'half_marathon',
+  'marathon',
+] as const;
+export type SeedDistance = (typeof SEED_DISTANCES)[number];
+
 // Race distances supported as seed inputs, in meters.
-const SEED_DISTANCE_METERS: Record<string, number> = {
+const SEED_DISTANCE_METERS: Record<SeedDistance, number> = {
   '1500m': 1500,
   mile: 1609.344,
   '3000m': 3000,
@@ -28,6 +42,12 @@ const SEED_DISTANCE_METERS: Record<string, number> = {
 // formula (Daniels & Gilbert, 1979). Returns the nearest integer VDOT, which
 // is passed directly to computePaceConfig.
 //
+// seedDistance is intentionally typed as `string`, not `SeedDistance` — this
+// function validates at runtime (see the throw below) so it stays safe to call
+// from contexts that aren't already Zod-validated at the API boundary. Callers
+// that do have a validated SeedDistance can still pass it directly, since
+// SeedDistance is assignable to string.
+//
 // Formula:
 //   velocity      = distance_meters / time_minutes          (m/min)
 //   % VO2max      = 0.8 + 0.1894393·e^(−0.012778·T)
@@ -37,7 +57,7 @@ const SEED_DISTANCE_METERS: Record<string, number> = {
 //
 // Reference: Daniels, J. (2014). Daniels' Running Formula (3rd ed.), ch. 2.
 export function deriveVdot(seedDistance: string, seedTimeSeconds: number): number {
-  const distanceMeters = SEED_DISTANCE_METERS[seedDistance];
+  const distanceMeters = SEED_DISTANCE_METERS[seedDistance as SeedDistance];
   if (distanceMeters === undefined) {
     throw new Error(
       `Unsupported seed distance: "${seedDistance}". ` +

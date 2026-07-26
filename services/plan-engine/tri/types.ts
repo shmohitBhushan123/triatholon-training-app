@@ -8,6 +8,14 @@ import type { RunWorkout } from '../run/types';
 import type { CyclingWorkout } from '../cycling/types';
 import type { SwimWorkout } from '../swim/types';
 
+// Single source of truth for supported triathlon race distances — referenced
+// by both this TypeScript type and lib/schemas/plan-request-tri.ts's Zod
+// schema, so the two can never drift apart. Also matches the check constraint
+// on tri_preferences.target_race_distance in the DB migration — if this list
+// changes, that constraint needs a matching migration update too.
+export const TRI_RACE_DISTANCES = ['sprint', 'olympic', '70.3', 'full'] as const;
+export type TriRaceDistance = (typeof TRI_RACE_DISTANCES)[number];
+
 export interface TriPreferences {
   id: string;
   userId: string;
@@ -19,7 +27,7 @@ export interface TriPreferences {
   // Defaults to the last (highest-numbered) day in the respective array when omitted.
   longRunDay?: number;
   longRideDay?: number;
-  targetRaceDistance: 'sprint' | 'olympic' | '70.3' | 'full';
+  targetRaceDistance: TriRaceDistance;
   targetRaceDate: string; // ISO date string
 }
 

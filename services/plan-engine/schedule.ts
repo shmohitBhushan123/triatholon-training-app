@@ -10,6 +10,13 @@
 // 'maintenance' is used when there are too few weeks for full periodization.
 export type TrainingPhase = 'base' | 'build1' | 'build2' | 'race_prep' | 'taper' | 'maintenance';
 
+// Athlete's stated goal for a training block — sport-agnostic, referenced by
+// RunPreferences, CyclingPreferences, and SwimPreferences. Single source of
+// truth so the TypeScript type and lib/schemas/plan-shared.ts's Zod schema
+// can never drift apart.
+export const GOAL_TYPES = ['completion', 'time_goal', 'base_building'] as const;
+export type GoalType = (typeof GOAL_TYPES)[number];
+
 // Week-level scaffold produced by buildPeriodizedSchedule and consumed by
 // each sport's workout-builder.
 export interface WeekSpec {
