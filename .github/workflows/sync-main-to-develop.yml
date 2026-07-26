@@ -1,0 +1,72 @@
+name: Sync main into develop
+
+# Runs after every push to main (e.g. when a release-please Release PR is
+# merged). Opens a PR that merges main back into develop using a real merge
+# commit — never squash or rebase — so main stays a true ancestor of develop
+# and future merges between the two branches don't hit unrelated-history
+# conflicts. See CHANGELOG.md history for why this matters.
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check if a sync is needed
+        id: check
+        run: |
+          git fetch origin develop main
+          if git merge-base --is-ancestor origin/main origin/develop; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Merge main into a sync branch
+        if: steps.check.outputs.needed == 'true'
+        id: merge
+        run: |
+          branch="chore/sync-main-to-develop-$(date +%Y%m%d%H%M%S)"
+          git checkout -b "$branch" origin/develop
+          if git merge origin/main --no-edit; then
+            git push origin "$branch"
+            echo "branch=$branch" >> "$GITHUB_OUTPUT"
+            echo "conflict=false" >> "$GITHUB_OUTPUT"
+          else
+            git merge --abort
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open pull request
+        if: steps.check.outputs.needed == 'true' && steps.merge.outputs.conflict == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base develop \
+            --head "${{ steps.merge.outputs.branch }}" \
+            --title "chore: sync main into develop" \
+            --body "Automated merge of main into develop (e.g. after a release-please release). Uses a real merge commit — do not squash or rebase when merging this PR, or main will stop being a true ancestor of develop."
+
+      - name: Fail loudly on conflict
+        if: steps.check.outputs.needed == 'true' && steps.merge.outputs.conflict == 'true'
+        run: |
+          echo "::error::main could not be automatically merged into develop due to conflicts. Resolve manually: checkout develop, merge origin/main, resolve conflicts, push a branch, and open a PR (merge commit only)."
+          exit 1

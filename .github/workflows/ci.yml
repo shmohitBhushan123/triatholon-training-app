@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       - feature/**
+      - bugfix/**
   pull_request:
     branches: [main, develop]
 
@@ -37,3 +38,6 @@ jobs:
 
       - name: Run tests (Vitest)
         run: npm run test:run
+
+      - name: Lint SQL migrations (squawk)
+        run: npx squawk 'supabase/migrations/**/*.sql'

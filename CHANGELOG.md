@@ -10,31 +10,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- `.github/workflows/release-please.yml` — automated release workflow; triggers on push to `main`, opens Release PRs with version bumps and changelog generation
-- `release-please-config.json` — release-please configuration; `release-type: node`, `feat` and `fix` surfaced in changelog, `chore` and `docs` hidden
-- `.release-please-manifest.json` — version manifest seeded at `0.1.0`
-- `app/privacy/page.tsx` — static privacy policy page; required for Whoop developer app registration
-- `lib/supabase/server.ts` — server-side Supabase client using service role key; bypasses RLS, used in all API route handlers
-- `lib/strava/auth.ts` — Strava OAuth helpers: `buildStravaAuthUrl`, `exchangeStravaCode`, `refreshStravaToken`
-- `lib/strava/client.ts` — authenticated Strava API client: `getValidAccessToken` (reads from Supabase, auto-refreshes on expiry), `stravaFetch` (authorized outbound HTTP wrapper)
-- `app/api/strava/connect/route.ts` — initiates Strava OAuth; generates CSRF state, sets httpOnly cookie, redirects to Strava
-- `app/api/strava/callback/route.ts` — Strava OAuth callback; validates CSRF state, exchanges code for tokens, upserts into `strava_tokens`
-- `app/api/strava/activities/route.ts` — proxies recent Strava activities; Zod-validated, returns JSON
-- `lib/config.ts` — typed, validated environment variable access; fails fast on missing vars
-- `lib/schemas/` — Zod schemas for Strava, Whoop, Garmin, and Athlete types
-- `lib/utils.ts` — shared utility functions
-- Next.js 15 with App Router and strict TypeScript
-- Tailwind CSS v4 with mobile-first dark theme
-- shadcn/ui with Nova preset; CSS variables in `app/globals.css`
-- Vitest configured as ESM-native test runner
-- ESLint 9 flat config with strict TypeScript ruleset
-- Prettier, Husky v9, lint-staged — pre-commit runs Prettier → ESLint → Vitest
-- GitHub Actions CI — triggers on push to `feature/**` and `develop`, PRs to `main`/`develop`
-- Supabase project provisioned; `strava_tokens` table with RLS policy
-- `.env.local.example` — documented template for all required environment variables
-
-### Dependencies
-
-- `zod` — runtime schema validation
-- `husky`, `lint-staged` — git hook management
-- `@types/node`, `typescript` — TypeScript toolchain
+- **feat: sync main to develop workflow** - create workflow to sync develop with main
+- **feat: triatholon plan implementation** - create bike plan training plan
+- **feat: bike plan implementation** - create bike plan training plan
+- **feat: general-scheduler** - migrate scheduler from run plan to general function for each dicipline to utilize
+- **fix: run plan refactor** - removed schedule.ts and moved to generators.ts, updated db table
+- **feat: run-plan-generator** - create run plan off calculation
+- **feat: plan-engine-scaffold** — added supabase migrations table with created plan tables for each sport. Scaffold each training plan under services
+- **feat: zwift** — `.zwo` XML file generator (`lib/zwift/zwo.ts`), Zod schema for all block types (`lib/schemas/zwift.ts`), `POST /api/zwift/generate` endpoint returning a downloadable `.zwo` file; supports Warmup, Cooldown, SteadyState, IntervalsT, and FreeRide blocks; power values expressed as FTP fractions
+- **feat: whoop** — Whoop OAuth flow, token storage in `whoop_tokens` (Supabase), auto-refresh client, recovery endpoint returning score, HRV, and RHR; `sleep_id` schema bug fixed
+- **feat: release-please setup** — automated release workflow on push to `main`; `release-please-config.json` and `.release-please-manifest.json` seeded at `0.1.0`
+- **feat: privacy page and scaffold deployment** — static privacy policy page at `/privacy`; required for Whoop developer app registration
+- **feat: strava** — Strava OAuth flow, token storage in `strava_tokens` (Supabase), auto-refresh client, activities endpoint; Supabase server client; Zod schemas for all API types
+- **feat: scaffold** — Next.js 15, Tailwind CSS v4, shadcn/ui, Vitest, ESLint, Prettier, Husky, GitHub Actions CI, project folder structure

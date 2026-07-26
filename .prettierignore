@@ -3,4 +3,5 @@ node_modules/
 out/
 build/
 public/
+supabase/
 *.lock
