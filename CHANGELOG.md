@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **feat: sync main to develop workflow** - create workflow to sync develop with main
 - **feat: triatholon plan implementation** - create bike plan training plan
 - **feat: bike plan implementation** - create bike plan training plan
 - **feat: general-scheduler** - migrate scheduler from run plan to general function for each dicipline to utilize
