@@ -1,23 +1,34 @@
 # VELORA
 
-A full-stack triathlon training app — think Runna, but for triathlon. VELORA generates a personalized, periodized swim/bike/run training plan and adapts it based on real recovery data, instead of a static, one-size-fits-all schedule.
+A full-stack triathlon training app — think Runna, but for triathlon. VELORA is a personal project to build a personalized, periodized swim/bike/run training plan generator, backed by real fitness data instead of a static, one-size-fits-all schedule.
 
 ## Why
 
 Runna is excellent for running, but there's no equivalent for triathlon that:
 
-- Is truly adaptive based on real recovery data (HRV, sleep, strain)
+- Is adaptive based on real recovery data (HRV, sleep, strain)
 - Integrates swim, bike, run, and brick workouts in one place
 - Feels like a modern consumer mobile app rather than a spreadsheet
 
-## Features
+This is currently a backend-first MVP under active development — see [Status](#status) below for what's actually built vs. what's planned.
 
-- **Algorithm-generated training plans** — a deterministic, rules-based periodization engine (Base → Build → Race Prep → Taper), not AI-generated. Given the same inputs, it always produces the same plan.
-- **Multi-sport support** — standalone run, cycling, or swim plans, or a composite triathlon plan with brick workouts.
-- **Activity sync** — completed workouts pulled from Strava and matched against planned sessions.
-- **Recovery overlay** — Whoop recovery score per day drives a green/yellow/red recommendation (execute as written / modify / skip).
-- **Zwift integration** — one-click `.zwo` file generation for any bike workout.
-- **Conversational coaching layer** — an LLM answers "why am I doing this session?" or "should I skip today?", but never generates or modifies the plan itself — that's the plan engine's job.
+## What's built
+
+- **Algorithm-generated training plans** — a deterministic, rules-based periodization engine (Base → Build → Race Prep → Taper), not AI-generated. Given the same inputs, it always produces the same plan. Covers standalone run, cycling, and swim plans, plus a composite triathlon plan with brick workouts, via `POST /api/plans/{run,cycling,swim,tri}`, `GET /api/plans/current`, and `GET /api/workouts/today`.
+- **Google sign-in** via Supabase Auth.
+- **Strava OAuth connection** and an endpoint to fetch an athlete's recent activities.
+- **Whoop OAuth connection** and an endpoint to fetch an athlete's recovery data (score, HRV, resting heart rate).
+- **Zwift `.zwo` file generation** — `POST /api/zwift/generate` turns a workout definition into a downloadable, Zwift-compatible workout file.
+
+## Planned
+
+- **Onboarding UI** — multi-step frontend form that collects the inputs the plan engine needs and posts to the plan-generation endpoints.
+- **Daily workout dashboard** — card-based view of today's session, reading from `GET /api/workouts/today`.
+- **Activity matching** — comparing synced Strava activities against planned sessions to mark them complete/partial/missed (`services/activity-matcher` is currently an empty stub).
+- **Recovery overlay** — turning raw Whoop recovery scores into a green/yellow/red execute/modify/skip recommendation (`services/recovery` is currently an empty stub).
+- **Garmin Connect integration** — activity and FTP history (not started; only a schema exists today).
+- **Conversational coaching layer** — an LLM to answer "why am I doing this session?" or "should I skip today?"; explicitly never used to generate or modify the plan itself.
+- **Adaptive plan adjustments** — shifting the plan based on sustained low recovery or missed sessions.
 
 ## Tech stack
 
@@ -41,4 +52,4 @@ make check       # prettier --write, eslint --fix, and tests, across the whole r
 
 ## Status
 
-Personal project, currently an MVP. Backend (plan engine, onboarding + persistence APIs, OAuth) is functional; frontend (onboarding flow, daily workout dashboard) is in progress.
+Personal project, pre-MVP. There is no frontend yet beyond sign-in/sign-out — everything else is API-only. The plan engine, its persistence APIs, and Strava/Whoop OAuth are functional and tested (320+ tests, `tsc`/`eslint`/`prettier` clean). Onboarding UI and the daily workout dashboard are next up.
