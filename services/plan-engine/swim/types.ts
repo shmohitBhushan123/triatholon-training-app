@@ -4,7 +4,7 @@
 // Pace values in workout types are denormalized at generation time —
 // a future time trial result does not change a workout that already exists in a plan.
 
-import type { TrainingPhase } from '../schedule';
+import type { TrainingPhase, GoalType } from '../schedule';
 
 export interface SwimmerProfile {
   id: string;
@@ -19,7 +19,7 @@ export interface SwimPreferences {
   id: string;
   userId: string;
   trainingDays: number[]; // [0,1,3,4,5] where 0=Monday, 6=Sunday
-  goalType: 'completion' | 'time_goal' | 'base_building';
+  goalType: GoalType;
   targetEvent: string | null;
   targetEventDate: string | null; // ISO date string
   // Optional override for base weekly yard volume. When omitted, generators.ts

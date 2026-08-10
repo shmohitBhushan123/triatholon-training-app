@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+**feat: add plan generation** - add endpoint for plan generation
 **feat: add google oAuth flow** - add middleware and google auth setup to supabase
 
 ## [0.2.0](https://github.com/shmohitBhushan123/triatholon-training-app/compare/triatholon-training-app-v0.1.0...triatholon-training-app-v0.2.0) (2026-07-26)
