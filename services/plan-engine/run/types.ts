@@ -4,13 +4,14 @@
 // Pace and power values in workout types are denormalized at generation time —
 // a future profile update does not change a workout that already exists in a plan.
 
-import type { TrainingPhase } from '../schedule';
+import type { TrainingPhase, GoalType } from '../schedule';
+import type { SeedDistance } from './vdot';
 
 export interface RunnerProfile {
   id: string;
   userId: string;
   vdot: number; // e.g. 52
-  seedDistance: string; // e.g. 'half_marathon', '5k'
+  seedDistance: SeedDistance; // e.g. 'half_marathon', '5k'
   seedTimeSeconds: number; // e.g. 5865 for 1:37:45
   updatedAt: string;
 }
@@ -52,7 +53,7 @@ export interface RunPreferences {
   userId: string;
   trainingDays: number[]; // [0,1,3,4,5] where 0=Monday, 6=Sunday
   longRunDay: number; // must be within trainingDays
-  goalType: 'completion' | 'time_goal' | 'base_building';
+  goalType: GoalType;
   targetRaceDistance: string | null;
   targetRaceDate: string | null; // ISO date string
   // Collected in hours on the onboarding UI, converted to minutes before storage.

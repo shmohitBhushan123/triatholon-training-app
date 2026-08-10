@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+**feat: add get endpoints** - add endpoints to retreiev plan information along with service for setup of api calls
+**feat: add plan generation** - add endpoint for plan generation
+**feat: add google oAuth flow** - add middleware and google auth setup to supabase
+
 ## [0.2.0](https://github.com/shmohitBhushan123/triatholon-training-app/compare/triatholon-training-app-v0.1.0...triatholon-training-app-v0.2.0) (2026-07-26)
 
 
@@ -31,8 +39,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * rebase from main ([71ab4a2](https://github.com/shmohitBhushan123/triatholon-training-app/commit/71ab4a2aba86c25013fc4c79cd039f0fd408213d))
 * run plan refactor ([#10](https://github.com/shmohitBhushan123/triatholon-training-app/issues/10)) ([9d1d8b5](https://github.com/shmohitBhushan123/triatholon-training-app/commit/9d1d8b57d199a6961e98d3c7bccfef12fb783f99))
-
-## [Unreleased]
 
 ### Added
 

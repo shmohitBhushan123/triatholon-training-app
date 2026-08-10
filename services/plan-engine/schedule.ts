@@ -10,6 +10,13 @@
 // 'maintenance' is used when there are too few weeks for full periodization.
 export type TrainingPhase = 'base' | 'build1' | 'build2' | 'race_prep' | 'taper' | 'maintenance';
 
+// Athlete's stated goal for a training block — sport-agnostic, referenced by
+// RunPreferences, CyclingPreferences, and SwimPreferences. Single source of
+// truth so the TypeScript type and lib/schemas/plan-shared.ts's Zod schema
+// can never drift apart.
+export const GOAL_TYPES = ['completion', 'time_goal', 'base_building'] as const;
+export type GoalType = (typeof GOAL_TYPES)[number];
+
 // Week-level scaffold produced by buildPeriodizedSchedule and consumed by
 // each sport's workout-builder.
 export interface WeekSpec {
@@ -86,4 +93,30 @@ export function getWeeksToEvent(targetDate: string): number {
   event.setHours(0, 0, 0, 0);
   const diffMs = event.getTime() - today.getTime();
   return Math.max(0, Math.ceil(diffMs / (7 * 24 * 60 * 60 * 1000)));
+}
+
+// Given a plan's creation timestamp (treated as day 1 of week 1) and the
+// plan's total week count, returns which week number "today" falls in.
+// Returns null if the plan hasn't started yet (shouldn't happen — plans are
+// created and immediately begin) or has already finished (today is past the
+// last scheduled week) — callers should treat null as "nothing to show".
+export function getCurrentWeekNumber(
+  planCreatedAt: string,
+  weeksTotal: number,
+  now: Date = new Date()
+): number | null {
+  const created = new Date(planCreatedAt);
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const weeksElapsed = Math.floor((now.getTime() - created.getTime()) / msPerWeek);
+  const weekNumber = weeksElapsed + 1;
+  if (weekNumber < 1 || weekNumber > weeksTotal) return null;
+  return weekNumber;
+}
+
+// Converts a JS Date to this codebase's day-of-week convention: 0=Monday,
+// 6=Sunday (see trainingDays comments across the sport types.ts files).
+// Date.getDay() uses 0=Sunday..6=Saturday, so Sunday needs to wrap to 6.
+export function getDayOfWeekIndex(now: Date = new Date()): number {
+  const jsDay = now.getDay();
+  return jsDay === 0 ? 6 : jsDay - 1;
 }
