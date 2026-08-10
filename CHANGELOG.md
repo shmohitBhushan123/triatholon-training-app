@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.0](https://github.com/shmohitBhushan123/triatholon-training-app/compare/triatholon-training-app-v0.2.0...triatholon-training-app-v0.3.0) (2026-08-10)
+
+
+### Features
+
+* GET endpoints / api refactor ([#34](https://github.com/shmohitBhushan123/triatholon-training-app/issues/34)) ([8e73325](https://github.com/shmohitBhushan123/triatholon-training-app/commit/8e733253ca45728b8357893c80574d0eba1e97fc))
+* middleware and google auth config ([#32](https://github.com/shmohitBhushan123/triatholon-training-app/issues/32)) ([76c3cd2](https://github.com/shmohitBhushan123/triatholon-training-app/commit/76c3cd2484907180eeb17a5bd716eaacce388e65))
+* plan generation endpoint ([#33](https://github.com/shmohitBhushan123/triatholon-training-app/issues/33)) ([5b0b27e](https://github.com/shmohitBhushan123/triatholon-training-app/commit/5b0b27e1a1eae6576c593e8656c561d7ef712921))
+
 ## [Unreleased]
 
 ### Added
