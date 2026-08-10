@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+**feat: add get endpoints** - add endpoints to retreiev plan information along with service for setup of api calls
 **feat: add plan generation** - add endpoint for plan generation
 **feat: add google oAuth flow** - add middleware and google auth setup to supabase
 

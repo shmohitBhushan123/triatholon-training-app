@@ -12,6 +12,7 @@ export { generateRunPlan } from './run/plan';
 export { generateCyclingPlan } from './cycling/plan';
 export { generateSwimPlan } from './swim/plan';
 export { generateTriPlan } from './tri/plan';
+export { getCurrentWeekNumber, getDayOfWeekIndex } from './schedule';
 export type { TrainingPhase, WeekSpec } from './schedule';
 export type { RunnerProfile, VdotPaceConfig, RunPreferences, RunWorkout } from './run/types';
 export type { CyclistProfile, CyclingPreferences, CyclingWorkout } from './cycling/types';

@@ -75,3 +75,58 @@ export function makeRequest(body: unknown) {
 export function makeBadJsonRequest() {
   return { json: () => Promise.reject(new Error('bad json')) } as Request as never;
 }
+
+type SelectResult = { data?: unknown; error?: unknown };
+
+// Builds a fake DB client for read-only (`.select(...)`) query chains —
+// `.eq()`, `.is()`, `.order()`, `.limit()` all just return the same builder
+// (no real filtering, this is a stub, not a query engine), and `.single()` /
+// `.maybeSingle()` / awaiting the builder directly (used for bulk `.select()`
+// without `.single()`) all resolve to the configured result for that table.
+//
+// A table can be given either a single result (returned for every call to
+// that table) or an array of results, consumed in call order — needed when a
+// route queries the same table more than once with different expected
+// results (e.g. a tri plan's getCurrentPlanRef "is there a standalone plan?"
+// check on run_plans, followed by getTriSubPlanIds' "find the sub-plan" check
+// on the same table). Once the array is down to its last entry, that entry
+// keeps being returned for any further calls.
+export function mockSelectDb(overrides: Record<string, SelectResult | SelectResult[]> = {}) {
+  const calls: Array<{ table: string }> = [];
+  const queues: Record<string, SelectResult[]> = {};
+  for (const [table, value] of Object.entries(overrides)) {
+    queues[table] = Array.isArray(value) ? [...value] : [value];
+  }
+
+  function chain(result: SelectResult) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const builder: any = {
+      select: () => builder,
+      eq: () => builder,
+      is: () => builder,
+      order: () => builder,
+      limit: () => builder,
+      single: () => Promise.resolve(result),
+      maybeSingle: () => Promise.resolve(result),
+      then: (resolve: (value: unknown) => unknown, reject?: (reason: unknown) => unknown) =>
+        Promise.resolve(result).then(resolve, reject),
+    };
+    return builder;
+  }
+
+  const from = vi.fn((table: string) => {
+    calls.push({ table });
+    const queue = queues[table];
+    const result: SelectResult =
+      queue && queue.length > 0
+        ? queue.length > 1
+          ? queue.shift()!
+          : queue[0]
+        : { data: null, error: null };
+    return chain(result);
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  vi.mocked(createServerClient).mockReturnValue({ from } as any);
+  return { calls };
+}

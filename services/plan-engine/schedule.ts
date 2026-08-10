@@ -94,3 +94,29 @@ export function getWeeksToEvent(targetDate: string): number {
   const diffMs = event.getTime() - today.getTime();
   return Math.max(0, Math.ceil(diffMs / (7 * 24 * 60 * 60 * 1000)));
 }
+
+// Given a plan's creation timestamp (treated as day 1 of week 1) and the
+// plan's total week count, returns which week number "today" falls in.
+// Returns null if the plan hasn't started yet (shouldn't happen — plans are
+// created and immediately begin) or has already finished (today is past the
+// last scheduled week) — callers should treat null as "nothing to show".
+export function getCurrentWeekNumber(
+  planCreatedAt: string,
+  weeksTotal: number,
+  now: Date = new Date()
+): number | null {
+  const created = new Date(planCreatedAt);
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const weeksElapsed = Math.floor((now.getTime() - created.getTime()) / msPerWeek);
+  const weekNumber = weeksElapsed + 1;
+  if (weekNumber < 1 || weekNumber > weeksTotal) return null;
+  return weekNumber;
+}
+
+// Converts a JS Date to this codebase's day-of-week convention: 0=Monday,
+// 6=Sunday (see trainingDays comments across the sport types.ts files).
+// Date.getDay() uses 0=Sunday..6=Saturday, so Sunday needs to wrap to 6.
+export function getDayOfWeekIndex(now: Date = new Date()): number {
+  const jsDay = now.getDay();
+  return jsDay === 0 ? 6 : jsDay - 1;
+}
