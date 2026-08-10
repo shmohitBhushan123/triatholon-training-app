@@ -25,7 +25,7 @@ export function generateZwo(workout: ZwoWorkout): string {
 
   return `<?xml version="1.0" encoding="utf-8"?>
 <workout_file>
-  <author>Triathlon Training App</author>
+  <author>VELORA</author>
   <name>${workout.name}</name>
   <description>${workout.description ?? ''}</description>
   <sportType>bike</sportType>

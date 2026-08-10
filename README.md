@@ -1,3 +1,3 @@
-# triatholon-training-app
+# VELORA
 
-Personal Triathlon App designed to track and upload workouts across several devices
+Personal triathlon training app designed to track and upload workouts across several devices
