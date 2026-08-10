@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildPeriodizedSchedule } from '../schedule';
+import { buildPeriodizedSchedule, getCurrentWeekNumber, getDayOfWeekIndex } from '../schedule';
 
 describe('buildFullSchedule', () => {
   describe('20 weeks, 2 taper weeks, 180 min base volume', () => {
@@ -75,5 +75,44 @@ describe('buildFullSchedule', () => {
     it('second-to-last week is not taper', () => {
       expect(schedule[10].phase).not.toBe('taper');
     });
+  });
+});
+
+describe('getCurrentWeekNumber', () => {
+  it('returns week 1 on the day the plan was created', () => {
+    const createdAt = new Date('2026-08-10T09:00:00Z');
+    expect(getCurrentWeekNumber(createdAt.toISOString(), 12, createdAt)).toBe(1);
+  });
+
+  it('returns week 2 exactly 7 days after creation', () => {
+    const createdAt = new Date('2026-08-10T09:00:00Z');
+    const oneWeekLater = new Date('2026-08-17T09:00:00Z');
+    expect(getCurrentWeekNumber(createdAt.toISOString(), 12, oneWeekLater)).toBe(2);
+  });
+
+  it('returns null once past the last week of the plan', () => {
+    const createdAt = new Date('2026-08-10T09:00:00Z');
+    const wayLater = new Date('2027-01-01T09:00:00Z');
+    expect(getCurrentWeekNumber(createdAt.toISOString(), 12, wayLater)).toBeNull();
+  });
+
+  it("returns null for a future createdAt (shouldn't happen, but defensive)", () => {
+    const createdAt = new Date('2026-08-10T09:00:00Z');
+    const before = new Date('2026-08-01T09:00:00Z');
+    expect(getCurrentWeekNumber(createdAt.toISOString(), 12, before)).toBeNull();
+  });
+});
+
+describe('getDayOfWeekIndex', () => {
+  it('maps Monday to 0', () => {
+    expect(getDayOfWeekIndex(new Date('2026-08-10T12:00:00Z'))).toBe(0); // a Monday
+  });
+
+  it('maps Sunday to 6', () => {
+    expect(getDayOfWeekIndex(new Date('2026-08-16T12:00:00Z'))).toBe(6); // a Sunday
+  });
+
+  it('maps Saturday to 5', () => {
+    expect(getDayOfWeekIndex(new Date('2026-08-15T12:00:00Z'))).toBe(5); // a Saturday
   });
 });
