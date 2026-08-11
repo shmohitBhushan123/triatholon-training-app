@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Triathlon Training App',
-  description: 'Privacy policy for the Triathlon Training App.',
+  title: 'Privacy Policy — VELORA',
+  description: 'Privacy policy for VELORA.',
 };
 
 export default function PrivacyPage() {

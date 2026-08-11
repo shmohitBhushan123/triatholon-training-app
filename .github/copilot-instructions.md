@@ -1,8 +1,8 @@
-# Copilot Instructions — Triathlon Training App
+# Copilot Instructions — VELORA
 
 ## Project Overview
 
-I am building a full-stack triathlon training app — think Runna but for triathlon (swim, bike, run). The app will be personalized, adaptive, and pull from real fitness data across multiple APIs. This is a personal project built to production quality.
+I am building VELORA, a full-stack triathlon training app — think Runna but for triathlon (swim, bike, run). The app will be personalized, adaptive, and pull from real fitness data across multiple APIs. This is a personal project built to production quality.
 
 The current build is an **MVP using Next.js as a web app**. The intention is to validate the product, get all core logic working (plan engine, API integrations, recovery overlay), and eventually port the frontend to React Native for a true native iOS/Android experience. Do not over-engineer for native at this stage, but do not make decisions that would make a future React Native migration unnecessarily painful.
 
