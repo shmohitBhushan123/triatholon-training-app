@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [Unreleased]
+
+### Added
+
+**feat: design system foundation** - create foundational desing tools with button, glass card, and global css values
 
 ## [0.3.0](https://github.com/shmohitBhushan123/triatholon-training-app/compare/triatholon-training-app-v0.2.0...triatholon-training-app-v0.3.0) (2026-08-10)
 
@@ -15,13 +20,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * middleware and google auth config ([#32](https://github.com/shmohitBhushan123/triatholon-training-app/issues/32)) ([76c3cd2](https://github.com/shmohitBhushan123/triatholon-training-app/commit/76c3cd2484907180eeb17a5bd716eaacce388e65))
 * plan generation endpoint ([#33](https://github.com/shmohitBhushan123/triatholon-training-app/issues/33)) ([5b0b27e](https://github.com/shmohitBhushan123/triatholon-training-app/commit/5b0b27e1a1eae6576c593e8656c561d7ef712921))
 
-## [Unreleased]
-
-### Added
-
-**feat: add get endpoints** - add endpoints to retreiev plan information along with service for setup of api calls
-**feat: add plan generation** - add endpoint for plan generation
-**feat: add google oAuth flow** - add middleware and google auth setup to supabase
 
 ## [0.2.0](https://github.com/shmohitBhushan123/triatholon-training-app/compare/triatholon-training-app-v0.1.0...triatholon-training-app-v0.2.0) (2026-07-26)
 
@@ -30,7 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * cycling plan ([#12](https://github.com/shmohitBhushan123/triatholon-training-app/issues/12)) ([75838b4](https://github.com/shmohitBhushan123/triatholon-training-app/commit/75838b401f61cc33008d7a2fb3b56bf8f0298a4a))
 * cycling plan ([#13](https://github.com/shmohitBhushan123/triatholon-training-app/issues/13)) ([b0592bf](https://github.com/shmohitBhushan123/triatholon-training-app/commit/b0592bf5d7a3b878c38080210083b8e8bfe5ba9c))
-* general scheduler ([#11](https://github.com/shmohitBhushan123/triatholon-training-app/issues/11)) ([408b518](https://github.com/shmohitBhushan123/triatholon-training-app/commit/408b518ee2791fa7b8713cbf8fbb02c37a5d4e1d))
+* general scheduler ([#11](https://github.com/shmohitBhushan123/triatholon-training-app/issues/11)) ([408b518](https://github.com/shmohitBhushan123/triatholon-training-app/commit/408b518eadd endpoints to retreiev plan information along with service for setup of api callse2791fa7b8713cbf8fbb02c37a5d4e1d))
 * main to develop workflow ([#23](https://github.com/shmohitBhushan123/triatholon-training-app/issues/23)) ([9cdeb5e](https://github.com/shmohitBhushan123/triatholon-training-app/commit/9cdeb5e1d83aa5a060ca2dc558d50f67970420fd))
 * plan-engine-scaffold ([#8](https://github.com/shmohitBhushan123/triatholon-training-app/issues/8)) ([3343cb7](https://github.com/shmohitBhushan123/triatholon-training-app/commit/3343cb7905706290c732de1beee9f2aa086d0482))
 * privacy page and scaffold deployment ([#3](https://github.com/shmohitBhushan123/triatholon-training-app/issues/3)) ([14641dc](https://github.com/shmohitBhushan123/triatholon-training-app/commit/14641dcc049d411f9d3981119a4b2da944f3ea29))

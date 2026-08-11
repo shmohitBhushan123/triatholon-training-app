@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -39,6 +39,12 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-glass-foreground: var(--glass-foreground);
+  --color-glass-accent: var(--glass-accent);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -49,72 +55,96 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Warm-tinted neutrals (chroma <= 0.004) */
+  --background: oklch(0.985 0.003 40);
+  --foreground: oklch(0.145 0.002 285);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.145 0.002 285);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.145 0.002 285);
+  /* Rose gold #B76E79, darkened for AA contrast on white */
+  --primary: oklch(0.55 0.085 12);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.97 0.002 40);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
+  --muted: oklch(0.97 0.002 40);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.97 0.002 40);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
+  --border: oklch(0.922 0.002 40);
+  --input: oklch(0.922 0.002 40);
+  --ring: oklch(0.6 0.08 12);
+  /* Charts: rose gold ramp + neutrals */
+  --chart-1: oklch(0.6 0.08 12);
+  --chart-2: oklch(0.75 0.05 12);
   --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --chart-4: oklch(0.269 0 0);
+  --chart-5: oklch(0.87 0 0);
+  /* Recovery semantics (execute / modify / skip) */
+  --success: oklch(0.62 0.15 150);
+  --warning: oklch(0.72 0.14 85);
+  /* Sharper than shadcn default 0.625rem — nods to the angular mark */
+  --radius: 0.375rem;
+  /*
+   * Glass surface (scene screens only: Home, onboarding). Deliberately not
+   * theme-dependent — same values in light and dark mode, since scene
+   * backdrops (sky gradients) sit outside the app's normal light/dark
+   * surfaces. Text on glass is always this dark warm-grey, never themed.
+   * --glass-accent is the lightened rose-gold step used for buttons/active
+   * states on glass (vs. --primary elsewhere), for contrast against the
+   * light glass background.
+   */
+  --glass-bg: oklch(0.9 0.004 40);
+  --glass-border: oklch(1 0 0);
+  --glass-foreground: oklch(0.28 0.012 60);
+  --glass-accent: oklch(0.72 0.08 12);
+  --sidebar: oklch(0.985 0.003 40);
+  --sidebar-foreground: oklch(0.145 0.002 285);
+  --sidebar-primary: oklch(0.55 0.085 12);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.97 0.002 40);
   --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-border: oklch(0.922 0.002 40);
+  --sidebar-ring: oklch(0.6 0.08 12);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  /* Near-black, slightly cool */
+  --background: oklch(0.146 0.004 285);
+  --foreground: oklch(0.958 0.003 40);
+  --card: oklch(0.185 0.005 285);
+  --card-foreground: oklch(0.958 0.003 40);
+  --popover: oklch(0.185 0.005 285);
+  --popover-foreground: oklch(0.958 0.003 40);
+  /* Rose gold at brand value #B76E79; near-black text on it */
+  --primary: oklch(0.62 0.08 12);
+  --primary-foreground: oklch(0.145 0.002 285);
+  --secondary: oklch(0.24 0.005 285);
+  --secondary-foreground: oklch(0.958 0.003 40);
+  --muted: oklch(0.24 0.005 285);
+  --muted-foreground: oklch(0.708 0.004 285);
+  --accent: oklch(0.24 0.005 285);
+  --accent-foreground: oklch(0.958 0.003 40);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.62 0.08 12);
+  --chart-1: oklch(0.62 0.08 12);
+  --chart-2: oklch(0.78 0.05 12);
+  --chart-3: oklch(0.708 0 0);
+  --chart-4: oklch(0.439 0 0);
+  --chart-5: oklch(0.87 0 0);
+  --success: oklch(0.72 0.15 150);
+  --warning: oklch(0.8 0.14 85);
+  --sidebar: oklch(0.185 0.005 285);
+  --sidebar-foreground: oklch(0.958 0.003 40);
+  --sidebar-primary: oklch(0.62 0.08 12);
+  --sidebar-primary-foreground: oklch(0.145 0.002 285);
+  --sidebar-accent: oklch(0.24 0.005 285);
+  --sidebar-accent-foreground: oklch(0.958 0.003 40);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.62 0.08 12);
 }
 
 @layer base {
@@ -126,5 +156,22 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer utilities {
+  /*
+   * Shard motif. Reserve cut corners for hero moments: primary CTA,
+   * today's workout card — never on every card (max one per screen).
+   */
+  .cut-corner {
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+  .cut-corner-lg {
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+  }
+  /* Progress fill with an angled leading edge */
+  .shard-progress {
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 100%, 0 100%);
   }
 }
