@@ -86,12 +86,22 @@ export function buildPeriodizedSchedule(
 
 // Whole weeks from today to a target date (ceiling). Used by all sport plan gates.
 // 'event', 'race', and 'ride' are the same concept — the date you're training toward.
+//
+// targetDate is a plain 'YYYY-MM-DD' string, which the Date constructor parses
+// as UTC midnight (per spec) — "today" needs to be normalized the same way
+// (UTC midnight of today's local calendar date), not local midnight, or the
+// two sides of the subtraction are in different timezones. The previous
+// implementation normalized `today` to *local* midnight via setHours(), and
+// then called setHours() on the already-UTC-midnight `event` too — which
+// actually re-interprets it in local time and can shift it a full day
+// backward in negative-UTC-offset zones (e.g. US timezones). Both bugs
+// could silently produce an off-by-one week depending on the exact moment
+// and timezone the code runs in.
 export function getWeeksToEvent(targetDate: string): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const event = new Date(targetDate);
-  event.setHours(0, 0, 0, 0);
-  const diffMs = event.getTime() - today.getTime();
+  const now = new Date();
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const event = new Date(targetDate).getTime();
+  const diffMs = event - today;
   return Math.max(0, Math.ceil(diffMs / (7 * 24 * 60 * 60 * 1000)));
 }
 

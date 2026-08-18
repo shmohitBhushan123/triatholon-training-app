@@ -9,10 +9,14 @@ import { generateRunPlan } from './plan';
 import type { RunnerProfile, RunPreferences } from './types';
 
 // Returns an ISO date string exactly N weeks from today at midnight.
+// Built entirely in UTC (rather than local setDate() + toISOString(), which
+// can land on a different calendar day depending on the local timezone's
+// offset from UTC at the moment the test runs).
 function weeksFromNow(weeks: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + weeks * 7);
-  return d.toISOString().split('T')[0];
+  const now = new Date();
+  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + weeks * 7))
+    .toISOString()
+    .split('T')[0];
 }
 
 const mockProfile: RunnerProfile = {

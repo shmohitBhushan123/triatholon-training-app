@@ -175,3 +175,28 @@
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 100%, 0 100%);
   }
 }
+
+/*
+ * Home scene backdrop's drifting shard accents (Design/design_handoff_home's
+ * "Drifting shards"). Applied via Tailwind's arbitrary animate value, e.g.
+ * `motion-safe:animate-[drift1_18s_ease-in-out_infinite]` — motion-safe:
+ * respects prefers-reduced-motion automatically, no extra media query needed.
+ */
+@keyframes drift1 {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(20px, -30px) rotate(4deg);
+  }
+}
+@keyframes drift2 {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-24px, -16px) rotate(-5deg);
+  }
+}

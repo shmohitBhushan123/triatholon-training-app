@@ -16,11 +16,6 @@ export function calculateTSS(
   return Math.round(durationHours * intensityFactor ** 2 * 100);
 }
 
-// Converts a percentage of FTP to absolute watts, rounded to the nearest watt.
-export function wattsFromPct(ftpWatts: number, pct: number): number {
-  return Math.round((pct / 100) * ftpWatts);
-}
-
 // Whole weeks from today to the target event date (ceiling).
 // Lives in the shared scheduling layer — re-exported here so imports within
 // the cycling module stay local.

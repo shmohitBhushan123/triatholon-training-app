@@ -43,11 +43,18 @@ const mockPreferences: TriPreferences = {
 };
 
 // Helper to build preferences with a race date a specific number of days out,
-// so tests don't rot as the current date advances.
+// so tests don't rot as the current date advances. Built entirely in UTC
+// (rather than local setDate() + toISOString(), which can land on a
+// different calendar day depending on the local timezone's offset from UTC
+// at the moment the test runs).
 function prefsWithDaysOut(daysOut: number): TriPreferences {
-  const d = new Date();
-  d.setDate(d.getDate() + daysOut);
-  return { ...mockPreferences, targetRaceDate: d.toISOString().split('T')[0] };
+  const now = new Date();
+  const targetRaceDate = new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + daysOut)
+  )
+    .toISOString()
+    .split('T')[0];
+  return { ...mockPreferences, targetRaceDate };
 }
 
 describe('generateTriPlan', () => {
