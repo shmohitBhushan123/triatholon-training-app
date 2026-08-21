@@ -9,6 +9,8 @@ vi.mock('next/navigation', () => ({
 import { TabBar } from './tab-bar';
 
 describe('TabBar', () => {
+  // For each route, confirms the matching tab gets the active styling and
+  // every other tab does not — i.e. exactly one tab is ever active.
   it.each([
     ['/', 'Today'],
     ['/plan', 'Plan'],
@@ -29,6 +31,8 @@ describe('TabBar', () => {
     }
   });
 
+  // Regression check: the shared href list matches TabBar's own TABS const,
+  // so a typo'd route wouldn't silently 404 for real users.
   it('renders all four tabs with the correct hrefs', () => {
     mockUsePathname.mockReturnValue('/');
     render(<TabBar />);
@@ -39,6 +43,8 @@ describe('TabBar', () => {
     expect(screen.getByRole('link', { name: 'Profile' })).toHaveAttribute('href', '/profile');
   });
 
+  // '/' is a special case in the active-tab check (exact match, not
+  // startsWith) — without it, every route would match Today's '/' prefix.
   it('does not treat "/" as active when on a nested route', () => {
     mockUsePathname.mockReturnValue('/plan');
     render(<TabBar />);

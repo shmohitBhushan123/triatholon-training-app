@@ -3,11 +3,14 @@ import { render, screen } from '@testing-library/react';
 import { GlassCard } from './glass-card';
 
 describe('GlassCard', () => {
+  // Sanity check that children actually render inside the glass wrapper.
   it('renders its children', () => {
     render(<GlassCard>Recovery 72%</GlassCard>);
     expect(screen.getByText('Recovery 72%')).toBeInTheDocument();
   });
 
+  // Each mock uses a different glass opacity (40-52%, per the Home README) —
+  // confirms the `opacity` prop maps to the right Tailwind class for each.
   it.each([
     [42, 'bg-(--glass-bg)/42'],
     [46, 'bg-(--glass-bg)/46'],
@@ -22,6 +25,9 @@ describe('GlassCard', () => {
     expect(screen.getByText('content')).toHaveClass('bg-(--glass-bg)/46');
   });
 
+  // The shard cut-corner treatment is reserved for one card per screen — this
+  // confirms the prop actually toggles it (clip-path + asymmetric radius) and
+  // that the default shape stays a plain rounded rectangle otherwise.
   it.each([
     [true, 'rounded-tr-none'],
     [false, 'rounded-[1rem]'],
@@ -36,6 +42,8 @@ describe('GlassCard', () => {
     }
   });
 
+  // Guards against a common cn()/twMerge regression where a caller's
+  // className accidentally replaces the defaults instead of merging with them.
   it('merges a caller-provided className without dropping the defaults', () => {
     render(<GlassCard className="mt-4">content</GlassCard>);
     const el = screen.getByText('content');

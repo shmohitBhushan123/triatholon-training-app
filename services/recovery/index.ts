@@ -4,7 +4,9 @@
 // athlete-facing recommendation: execute the session as written, modify it,
 // or skip it. Thresholds follow Whoop's own recovery convention.
 
-import type { RecoveryStatus } from '@/types';
+// The only place a RecoveryStatus is derived — kept here rather than in the
+// shared types/ file, since nothing else independently produces one.
+export type RecoveryStatus = 'green' | 'yellow' | 'red';
 
 const RED_MAX = 33; // scores below this are red
 const YELLOW_MAX = 66; // scores from RED_MAX..YELLOW_MAX are yellow; above is green

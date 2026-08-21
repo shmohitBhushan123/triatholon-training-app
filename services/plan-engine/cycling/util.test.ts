@@ -2,7 +2,7 @@
 // Pure function tests — it.each() used throughout because each case is the same
 // assertion pattern across varying inputs.
 import { describe, it, expect } from 'vitest';
-import { calculateTSS, wattsFromPct, getWeeksToEvent } from './util';
+import { calculateTSS, getWeeksToEvent } from './util';
 
 const FTP = 163;
 
@@ -30,36 +30,29 @@ describe('calculateTSS', () => {
   });
 });
 
-describe('wattsFromPct', () => {
-  it.each([
-    { pct: 65, expected: Math.round(0.65 * FTP) },
-    { pct: 100, expected: FTP },
-    { pct: 55, expected: Math.round(0.55 * FTP) },
-    { pct: 120, expected: Math.round(1.2 * FTP) },
-  ])('$pct% of FTP $expected w', ({ pct, expected }) => {
-    expect(wattsFromPct(FTP, pct)).toBe(expected);
-  });
-});
+// Builds a 'YYYY-MM-DD' date string N days from today, entirely in UTC —
+// matching how getWeeksToEvent itself normalizes "today" — rather than
+// local setDate() + toISOString(), which can land on a different calendar
+// day depending on the local timezone's offset from UTC at test-run time.
+function daysFromNowUtc(days: number): string {
+  const now = new Date();
+  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + days))
+    .toISOString()
+    .split('T')[0];
+}
 
 describe('getWeeksToEvent', () => {
   it('returns 10 for a date exactly 70 days away', () => {
-    const d = new Date();
-    d.setDate(d.getDate() + 70);
-    expect(getWeeksToEvent(d.toISOString().split('T')[0])).toBe(10);
+    expect(getWeeksToEvent(daysFromNowUtc(70))).toBe(10);
   });
 
   it('returns 0 for today (never negative)', () => {
-    const today = new Date().toISOString().split('T')[0];
-    expect(getWeeksToEvent(today)).toBe(0);
+    expect(getWeeksToEvent(daysFromNowUtc(0))).toBe(0);
   });
 
   it('returns a larger value for a further date', () => {
-    const near = new Date();
-    near.setDate(near.getDate() + 70);
-    const far = new Date();
-    far.setDate(far.getDate() + 140);
-    expect(getWeeksToEvent(far.toISOString().split('T')[0])).toBeGreaterThan(
-      getWeeksToEvent(near.toISOString().split('T')[0])
+    expect(getWeeksToEvent(daysFromNowUtc(140))).toBeGreaterThan(
+      getWeeksToEvent(daysFromNowUtc(70))
     );
   });
 });

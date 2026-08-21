@@ -11,17 +11,24 @@ const mockProfile: SwimmerProfile = {
   updatedAt: '2026-06-11T00:00:00Z',
 };
 
-// Helpers to build a preferences object with a specific event date.
+// Helpers to build a preferences object with a specific event date. Built
+// entirely in UTC (rather than local setDate() + toISOString(), which can
+// land on a different calendar day depending on the local timezone's offset
+// from UTC at the moment the test runs).
 function prefsWithDate(daysOut: number): SwimPreferences {
-  const d = new Date();
-  d.setDate(d.getDate() + daysOut);
+  const now = new Date();
+  const targetEventDate = new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + daysOut)
+  )
+    .toISOString()
+    .split('T')[0];
   return {
     id: 'test-pref-id',
     userId: 'test-user',
     trainingDays: [0, 2, 4],
     goalType: 'completion',
     targetEvent: '70.3_swim',
-    targetEventDate: d.toISOString().split('T')[0],
+    targetEventDate,
   };
 }
 

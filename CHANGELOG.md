@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-**feat: design system foundation** - create foundational desing tools with button, glass card, and global css values
+**feat: home page construction** - homepage construction
+**feat: design system foundation** - create foundational design tools with button, glass card, and global css values
 
 ## [0.3.0](https://github.com/shmohitBhushan123/triatholon-training-app/compare/triatholon-training-app-v0.2.0...triatholon-training-app-v0.3.0) (2026-08-10)
 
